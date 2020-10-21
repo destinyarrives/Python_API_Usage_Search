@@ -5,8 +5,15 @@ import astunparse
 from github import Github
 import requests
 from requests.auth import HTTPBasicAuth
+import os
 
-GITHUB_TOKEN = "aa829f9756cfd2ff68d08cb11fd91722b4cf1957"
+# my github api key will be stored in an untracked token.txt file
+token_file = os.path.join(os.getcwd(), "token.txt")
+
+with open(token_file, 'rt') as f:
+    GITHUB_TOKEN = f.read().replace('\n', '')
+#GITHUB_TOKEN = "aa829f9756cfd2ff68d08cb11fd91722b4cf1957"
+
 
 def open_github_connection():
     if not GITHUB_TOKEN:
