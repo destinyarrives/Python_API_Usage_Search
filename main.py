@@ -5,7 +5,7 @@ from datetime import datetime
 from multiprocessing.dummy import Pool as DummyPool
 import queue
 from api_formatter import *
-
+import pandas as pd
 
 # File wide constant
 MINIMUM_STAR = 0
@@ -15,6 +15,11 @@ WRITE_QUEUE = queue.Queue()
 CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
+
+# For searching through a list of engineered repos, predetermined 
+df = pd.read_csv("projects.csv")
+df = df[df["Final Label"] == "Y"]
+LIST_OF_REPOS = df["GitHub Repo"].tolist()
 
 def processFunction(result):
     try:
@@ -141,19 +146,8 @@ if __name__ == "__main__":
         print('e.g. : python search.py "scikit-learn" "sklearn.cluster.KMeans"')
         exit()
 
-    # Github API search provide up to 1000 results for each search
-    PYTHON_LANGUAGE_QUERY = "language:python"
     API_QUERY = sys.argv[2]
     LIBRARY = sys.argv[1]
-    SEARCH_QUERY = "q={}+extension:py".format(API_QUERY)
-
-    # Changed into () from #
-    temp = API_QUERY.split("(")
-    # if len > 1, there are keyword query
-    if len(temp) > 1:
-        key_string = temp[1][:-1]
-        FORMATTED_QUERY_KEYS = key_string.split(",")
-    FORMATTED_QUERY_NAME = temp[0]
 
     # Create and test connection
     g = utils.open_github_connection()
@@ -163,12 +157,11 @@ if __name__ == "__main__":
     if conn != 1:
         exit()
 
-    search_result = g.search_code(SEARCH_QUERY)
-    total_count = search_result.totalCount
-    # You can modify the amount of searched repo using python array slicing here
-    # search_result = search_result[0:100]
+    # This chunk declares the variables used in the search
+    total_count = 0
 
-    print("Query: " + SEARCH_QUERY)
+    total_file_count = 0
+    total_api_instance_count = 0
 
     # Open the output file too
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
@@ -176,17 +169,39 @@ if __name__ == "__main__":
     output_file_name = output_function + "_" + current_time + ".txt"
     print("Output file: " + output_file_name)
     outfile = open(output_file_name, 'w', encoding="utf-8")
-    outfile.write("Total amount of searched repo: " + total_count.__str__() + "\n")
 
-    total_file_count = 0
-    total_api_instance_count = 0
+    # This chunk initiates the search for every repo in the list
+    for repo in LIST_OF_REPOS[3:4]:
+        # Github API search provide up to 1000 results for each search
+        PYTHON_LANGUAGE_QUERY = "language:python"
+        SEARCH_QUERY = f"q={API_QUERY}+extension:py+repo:{repo}"
+
+        # Changed into () from #
+        temp = API_QUERY.split("(")
+        # if len > 1, there are keyword query
+        if len(temp) > 1:
+            key_string = temp[1][:-1]
+            FORMATTED_QUERY_KEYS = key_string.split(",")
+        FORMATTED_QUERY_NAME = temp[0]
+
+        search_result = g.search_code(SEARCH_QUERY)
+        total_count += search_result.totalCount
+        # You can modify the amount of searched repo using python array slicing here
+        # search_result = search_result[0:100]
+
+        print("Query: " + SEARCH_QUERY)
+
+        processFunction(search_result)
+
+        #with DummyPool(32) as p:
+        #    p.map(processFunction, search_result)
+
+
+    outfile.write("Total amount of searched repo: " + total_count.__str__() + "\n")
 
     start_time = time()
 
     print(search_result)
-
-    with DummyPool(32) as p:
-        p.map(processFunction, search_result)
 
     for listQ in WRITE_QUEUE.queue:
         for line in listQ:

@@ -1,0 +1,7 @@
+Total amount of searched repo: 0
+Total file containing the API: 0
+Total API usage count: 0
+
+Download link and script below: 
+Time taken: 5.3882598876953125e-05
+
