@@ -186,15 +186,17 @@ if __name__ == "__main__":
 
         search_result = g.search_code(SEARCH_QUERY)
         total_count += search_result.totalCount
+        print(total_count)
         # You can modify the amount of searched repo using python array slicing here
         # search_result = search_result[0:100]
 
         print("Query: " + SEARCH_QUERY)
+        print(search_result[0].name)
 
-        processFunction(search_result)
+        #processFunction(search_result)
 
-        #with DummyPool(32) as p:
-        #    p.map(processFunction, search_result)
+        with DummyPool(32) as p:
+            p.map(processFunction, search_result)
 
 
     outfile.write("Total amount of searched repo: " + total_count.__str__() + "\n")
