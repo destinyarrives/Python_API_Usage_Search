@@ -8,7 +8,7 @@ from api_formatter import *
 
 
 # File wide constant
-MINIMUM_STAR = 0
+MINIMUM_STAR = 20
 SEARCHED_REPO = {}
 DOWNLOAD_LIST = queue.Queue()
 WRITE_QUEUE = queue.Queue()
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     PYTHON_LANGUAGE_QUERY = "language:python"
     API_QUERY = sys.argv[2]
     LIBRARY = sys.argv[1]
-    SEARCH_QUERY = "q={}+extension:py".format(API_QUERY)
+    SEARCH_QUERY = f"q={API_QUERY}+extension:py"
 
     # Changed into () from #
     temp = API_QUERY.split("(")
