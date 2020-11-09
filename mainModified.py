@@ -7,6 +7,8 @@ import queue
 from api_formatter import *
 import pandas as pd
 from pathlib import Path
+from shutil import copy2 
+
 #from git import Repo
 
 # File wide constant
@@ -95,11 +97,9 @@ def processFunctionModified(result):
             total_file_count += 1
             listWrite = []
 
-            #p = result.split(os.sep)[-2]
-
-            #listWrite.append("Repository: " + p + "\n")
+            #do we want the info on owner of repo?
+            #listWrite.append("Repository: " + p + "\n") 
             listWrite.append("File path: " + result + "\n")
-            #listWrite.append("File path: " + current_file.path + "\n")
             for text in list_api_location:
                 total_api_instance_count += 1
                 listWrite.append(text + "\n")

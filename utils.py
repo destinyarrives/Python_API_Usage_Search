@@ -6,6 +6,7 @@ from github import Github
 import requests
 from requests.auth import HTTPBasicAuth
 import os
+from shutil import copy2 
 
 # my github api key will be stored in an untracked token.txt file
 token_file = os.path.join(os.getcwd(), "token.txt")
