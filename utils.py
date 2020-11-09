@@ -133,3 +133,20 @@ def recurseScope(node):
         recurseList = recurseScope(scope)
         returnList += recurseList
     return returnList
+
+def get_file_contents(file):
+    f = open(file, "r")
+    code = f.read()
+    f.close()
+    return code
+
+def get_all_py_files(directory) -> int, list:
+    # returns count of python files in a directory and list of their filepaths
+    count, files = 0, []
+    for subdir, dirs, files in os.walk(directory):
+        for filename in files:
+            filepath = subdir + os.sep + filename
+            if filepath.endswith(".py"):
+                files.append(filepath)
+                count += 1
+    return count, files

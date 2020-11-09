@@ -6,11 +6,11 @@ from multiprocessing.dummy import Pool as DummyPool
 import queue
 from api_formatter import *
 import pandas as pd
+from pathlib import Path
 #from git import Repo
 
 # File wide constant
-MINIMUM_STAR = 0
-SEARCHED_REPO = {}
+PYTHON_FILEPATHS = []
 DOWNLOAD_LIST = queue.Queue()
 WRITE_QUEUE = queue.Queue()
 CODE_QUEUE = queue.Queue()
@@ -94,6 +94,11 @@ def processFunctionModified(result):
         if is_api_found:
             total_file_count += 1
             listWrite = []
+
+            #p = result.split(os.sep)[-2]
+
+            #listWrite.append("Repository: " + p + "\n")
+            listWrite.append("File path: " + result + "\n")
             #listWrite.append("File path: " + current_file.path + "\n")
             for text in list_api_location:
                 total_api_instance_count += 1
@@ -104,34 +109,15 @@ def processFunctionModified(result):
     except Exception as e:
         print(e.__str__())
 
-def get_file_contents(file):
-    f = open(file, "r")
-    code = f.read()
-    f.close()
-
-    return code
-
-def generate_list_of_urls_to_download(csv_file):
-    """
-    input: output file from main.py
-    output: list of urls that can be fed into download_raw_file function
-    """
-    #results_file = codecs.open("sklearn-cluster-KMeans_October-21-2020_1426PM.txt", "r", encoding="utf-8")
-
-    df = pd.read_csv(csv_file)
-    df = df[df["Final Label"] == "Y"]
-    list_of_urls = df["GitHub Repo"].tolist()
-
-
 if __name__ == "__main__":
 
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 3:
         print("USAGE: ")
         print('python search.py "LIBRARY_NAME" "FUNCTION_NAME" "FILE_TO_SEARCH_IN"')
         print('e.g. : python search.py "scikit-learn" "sklearn.cluster.KMeans" "/asdfasdf/test.py"')
         exit()
 
-    SEARCH_FILE = sys.argv[3]
+    #SEARCH_FILE = sys.argv[3]
     API_QUERY = sys.argv[2] #"sklearn.cluster.KMeans(n = 4)"
     LIBRARY = sys.argv[1] #"scikit-learn"
 
@@ -156,10 +142,11 @@ if __name__ == "__main__":
 
     start_time = time()
 
-    # <insert chunk of code to perform search here>
-    processFunctionModified(SEARCH_FILE)
-    #for file in 
+    cnt, PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered")
 
+    for file in PYTHON_FILEPATHS:
+        print(file)
+        processFunctionModified(file)
 
     #with DummyPool(32) as p:
     #    p.map(processFunction, search_result)
@@ -171,10 +158,7 @@ if __name__ == "__main__":
 
     outfile.write("Total file containing the API: " + total_file_count.__str__() + "\n")
     outfile.write("Total API usage count: " + total_api_instance_count.__str__() + "\n\n")
-    outfile.write("Download link and script below: \n")
     outfile.write("Time taken: " + (time() - start_time).__str__() + "\n\n")
-    for line in DOWNLOAD_LIST.queue:
-        outfile.write(line)
     outfile.close()
 
     print("Time taken: " + (time() - start_time).__str__())
