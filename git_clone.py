@@ -26,4 +26,5 @@ except:
     print("Folder already exists, moving on to the next step...")
 
 for url in urls:
+    print(f"Cloning {url}")
     git.Git(p).clone(url)
