@@ -13,18 +13,16 @@ from shutil import copy2
 
 # File wide constant
 PYTHON_FILEPATHS = []
-DOWNLOAD_LIST = queue.Queue()
 WRITE_QUEUE = queue.Queue()
 CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
 
-def processFunctionModified(result):
+def processFunctionModified(result, folder_to_move_into):
     try:
         global total_api_instance_count
         global total_file_count
         global SEARCHED_REPO
-        global DOWNLOAD_LIST
         global WRITE_QUEUE
         global CODE_QUEUE
 
@@ -94,11 +92,14 @@ def processFunctionModified(result):
                     is_api_found = True
 
         if is_api_found:
+            print(result)
+            copy2(result, folder_to_move_into + "/")
             total_file_count += 1
             listWrite = []
 
             #do we want the info on owner of repo?
             #listWrite.append("Repository: " + p + "\n") 
+            listWrite.append("----------------\n")
             listWrite.append("File path: " + result + "\n")
             for text in list_api_location:
                 total_api_instance_count += 1
@@ -137,16 +138,23 @@ if __name__ == "__main__":
     outfile = open(output_file_name, 'w', encoding="utf-8")
     #outfile.write("Total amount of searched repo: " + total_count.__str__() + "\n")
 
+    # Prepare folder to move resultant files into
+    p = str(Path.cwd()) + "/result_snippets/" + FORMATTED_QUERY_NAME + "_" + current_time
+    print(p)
+    try:
+        Path(p).mkdir(parents = True, exist_ok = True)
+    except:
+        pass
+
     total_file_count = 0
     total_api_instance_count = 0
 
     start_time = time()
 
-    cnt, PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered")
+    PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered"/"adaptnlp")
 
     for file in PYTHON_FILEPATHS:
-        print(file)
-        processFunctionModified(file)
+        processFunctionModified(file, p)
 
     #with DummyPool(32) as p:
     #    p.map(processFunction, search_result)
@@ -156,6 +164,7 @@ if __name__ == "__main__":
             print(line)
             outfile.write(line)
 
+    outfile.write("APIs evaluated in total: " + str(len(PYTHON_FILEPATHS)) + "\n")
     outfile.write("Total file containing the API: " + total_file_count.__str__() + "\n")
     outfile.write("Total API usage count: " + total_api_instance_count.__str__() + "\n\n")
     outfile.write("Time taken: " + (time() - start_time).__str__() + "\n\n")

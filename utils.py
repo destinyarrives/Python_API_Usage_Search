@@ -6,7 +6,7 @@ from github import Github
 import requests
 from requests.auth import HTTPBasicAuth
 import os
-from shutil import copy2 
+from pathlib import Path
 
 # my github api key will be stored in an untracked token.txt file
 token_file = os.path.join(os.getcwd(), "token.txt")
@@ -141,13 +141,12 @@ def get_file_contents(file):
     f.close()
     return code
 
-def get_all_py_files(directory) -> int, list:
-    # returns count of python files in a directory and list of their filepaths
-    count, files = 0, []
+def get_all_py_files(directory):
+    p = []
     for subdir, dirs, files in os.walk(directory):
         for filename in files:
             filepath = subdir + os.sep + filename
+
             if filepath.endswith(".py"):
-                files.append(filepath)
-                count += 1
-    return count, files
+                p.append(filepath)
+    return p
