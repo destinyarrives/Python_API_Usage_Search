@@ -161,7 +161,7 @@ if __name__ == "__main__":
 
     for listQ in WRITE_QUEUE.queue:
         for line in listQ:
-            print(line)
+            #print(line)
             outfile.write(line)
 
     outfile.write("APIs evaluated in total: " + str(len(PYTHON_FILEPATHS)) + "\n")

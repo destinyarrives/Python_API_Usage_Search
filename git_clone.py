@@ -1,5 +1,6 @@
 import git
 from pathlib import Path
+from datetime import datetime
 import pandas as pd
 
 def generate_list_of_urls_to_download(csv_file):
@@ -16,12 +17,6 @@ def generate_list_of_urls_to_download(csv_file):
     dict_of_urls = dict(zip(df["GitHub Repo"], df["GitHub Link"]))
     return dict_of_urls
 
-def get_repos(d):
-    return d.keys()
-
-def get_urls(d):
-    return d.values()
-
 
 if __name__ == "__main__":
 
@@ -29,23 +24,25 @@ if __name__ == "__main__":
 
     # creates folder to contain repos, if it doesn't already exist
     p = Path.cwd()/"engineered"
-    try:
-        Path(p).mkdir()
-    except:
-        print("Folder already exists, moving on to the next step...")
+    # try:
+    #     Path(p).mkdir()
+    # except:
+    #     print("Folder already exists, moving on to the next step...")
 
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
     output_file_name =  "errorCloning_" + current_time + ".txt"
     outfile = open(output_file_name, 'w', encoding="utf-8")
 
     successes, failures = 0, 0
-    for url in get_urls(repo_urls):
+    for repo, url in repo_urls.items():
         try:
+            p = Path.cwd()/"engineered"/repo
+            Path(p).mkdir(parents = True, exist_ok = True)
             print(f"Cloning {url}")
             git.Git(p).clone(url)
             successes += 1
         except:
-            outfile.write(url)
+            outfile.write(url + "\n")
             failures += 1
 
     outfile.close()

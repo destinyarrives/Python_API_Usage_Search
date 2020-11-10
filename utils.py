@@ -150,3 +150,9 @@ def get_all_py_files(directory):
             if filepath.endswith(".py"):
                 p.append(filepath)
     return p
+
+def write_list_of_files(list_of_files):
+    outfile = open("listOfPythonFiles", 'w', encoding="utf-8")
+    for item in list_of_files:
+        outfile.write(item)
+    outfile.close()
