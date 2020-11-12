@@ -2,8 +2,6 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-#%%
-
 pages = ["https://pytorch.org/docs/stable/torch.html",
          "https://pytorch.org/docs/stable/nn.html",
          "https://pytorch.org/docs/stable/nn.functional.html",
@@ -43,13 +41,11 @@ pages = ["https://pytorch.org/docs/stable/torch.html",
          "https://pytorch.org/docs/stable/name_inference.html",
          "https://pytorch.org/docs/stable/__config__.html"]
 
-matches = []
-for page in pages[:2]:
+f = open("torch_apis.txt", "w", encoding = "utf-8")
+for page in pages:
     page_contents = requests.get(page)
     soup = BeautifulSoup(page_contents.content, 'html.parser')
     result = soup.find_all(name = "tr", attrs = {"class":["row-odd", "row-even"]})
-
-    exp = re.compile(r'id="[\w.]+"')
 
     # print(str(result[0]))
     # print(p.search(str(result[0])))
@@ -58,12 +54,15 @@ for page in pages[:2]:
     # print(match.group(0))
 
     for line in result:
-        m = re.search(r'id="[\w.]+"', str(line))
+        m = re.search(r'id="[\w.]+"|title="[\w.]+"', str(line))
         if m:
             m = m.group(0)
             m = m.split("\"")[1]
-            matches.append(m)
+            f.write(m + "\n")
 
-    matches.append("---------")
+    f.write("---------\n")
+f.close()
 
-print(*matches, sep = "\n")
+
+#print(*result, sep = "\n")
+# print(*matches, sep = "\n")
