@@ -17,26 +17,25 @@ def generate_list_of_urls_to_download(csv_file):
     dict_of_urls = dict(zip(df["GitHub Repo"], df["GitHub Link"]))
     return dict_of_urls
 
-
 if __name__ == "__main__":
 
     repo_urls = generate_list_of_urls_to_download("projects.csv")
 
     # creates folder to contain repos, if it doesn't already exist
-    p = Path.cwd()/"engineered"
-    # try:
-    #     Path(p).mkdir()
-    # except:
-    #     print("Folder already exists, moving on to the next step...")
+    Path(Path.cwd()/"engineered").mkdir(exist_ok = True)
 
+    # opens file to record repos that encountered errors
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
     output_file_name =  "errorCloning_" + current_time + ".txt"
     outfile = open(output_file_name, 'w', encoding="utf-8")
 
     successes, failures = 0, 0
     for repo, url in repo_urls.items():
+        if successes > 30:
+            break
         try:
-            p = Path.cwd()/"engineered"/repo
+            r = repo.replace("/", "_")
+            p = Path.cwd()/"engineered"/r
             Path(p).mkdir(parents = True, exist_ok = True)
             print(f"Cloning {url}")
             git.Git(p).clone(url)

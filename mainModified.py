@@ -50,7 +50,7 @@ def processFunctionModified(result, folder_to_move_into):
         """
 
         try:
-            decoded_file_content = get_file_contents(result)
+            decoded_file_content = get_file_contents(result) #opens and reads .py file coming in
         except:
             return None
         try:
@@ -125,9 +125,8 @@ if __name__ == "__main__":
     API_QUERY = sys.argv[2] #"sklearn.cluster.KMeans(n = 4)"
     LIBRARY = sys.argv[1] #"scikit-learn"
 
-    # Changed into () from #
     temp = API_QUERY.split("(")
-    # if len > 1, there are keyword query
+    # if len > 1, there are keyword queries
     if len(temp) > 1: 
         key_string = temp[1][:-1] #"n = 4"
         FORMATTED_QUERY_KEYS = key_string.split(",")
@@ -139,9 +138,8 @@ if __name__ == "__main__":
     output_file_name = output_function + "_" + current_time + ".txt"
     print("Output file: " + output_file_name)
     outfile = open(output_file_name, 'w', encoding="utf-8")
-    #outfile.write("Total amount of searched repo: " + total_count.__str__() + "\n")
 
-    # Prepare folder to move resultant files into
+    # Prepare folder to move resultant files into <---- NEEDS REWORK
     p = str(Path.cwd()) + "/result_snippets/" + FORMATTED_QUERY_NAME + "_" + current_time
     print(p)
     try:
@@ -157,7 +155,7 @@ if __name__ == "__main__":
     PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered"/"adaptnlp")
 
     for file in PYTHON_FILEPATHS:
-        processFunctionModified(file, p)
+        processFunctionModified(file, p) #<---- PATH NEEDS TO BE DYNAMICALLY SET HERE
 
     #with DummyPool(32) as p:
     #    p.map(processFunction, search_result)
@@ -167,10 +165,10 @@ if __name__ == "__main__":
             #print(line)
             outfile.write(line)
 
-    outfile.write("APIs evaluated in total: " + str(len(PYTHON_FILEPATHS)) + "\n")
-    outfile.write("Total file containing the API: " + total_file_count.__str__() + "\n")
-    outfile.write("Total API usage count: " + total_api_instance_count.__str__() + "\n\n")
-    outfile.write("Time taken: " + (time() - start_time).__str__() + "\n\n")
+    outfile.write("***APIs evaluated in total: " + str(len(PYTHON_FILEPATHS)) + "\n")
+    outfile.write("***Total file containing the API: " + total_file_count.__str__() + "\n")
+    outfile.write("***Total API usage count: " + total_api_instance_count.__str__() + "\n\n")
+    outfile.write("***Time taken: " + (time() - start_time).__str__() + "\n\n")
     outfile.close()
 
     print("Time taken: " + (time() - start_time).__str__())
