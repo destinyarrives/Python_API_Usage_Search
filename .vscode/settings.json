@@ -1,5 +1,8 @@
 {
     "python.linting.pylintEnabled": false,
     "python.linting.banditEnabled": true,
-    "python.linting.enabled": false
+    "python.linting.enabled": false,
+    "files.associations": {
+        "\"python.pythonPath\"": "\"/Users/tenghao/python-virtual-environments/deepharvest/bin/python\""
+    }
 }

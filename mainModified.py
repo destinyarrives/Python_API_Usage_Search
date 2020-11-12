@@ -2,7 +2,6 @@ import os
 import utils
 import sys
 from datetime import datetime
-from multiprocessing.dummy import Pool as DummyPool
 import queue
 from api_formatter import *
 import pandas as pd
