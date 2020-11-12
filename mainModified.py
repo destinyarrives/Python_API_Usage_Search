@@ -18,6 +18,10 @@ CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
 
+def find_owner_repo(filepath):
+    temp = filepath.split(os.sep)
+    return temp[]
+
 def processFunctionModified(result, folder_to_move_into):
     try:
         global total_api_instance_count
