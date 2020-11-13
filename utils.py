@@ -156,3 +156,18 @@ def write_list_of_files(list_of_files):
     for item in list_of_files:
         outfile.write(item)
     outfile.close()
+
+def process_list_of_torch_apis(list_of_apis_file):
+    result, entered = [], []
+    f = open(list_of_apis_file, "r")
+    text = f.read()
+    text = text.split("\n")
+    for line in text:
+        if line == "---------":
+            continue
+        else:
+            if line not in entered:
+                entered.append(line)
+                l = line.split(".", 1)
+                result.append((l[0], l[1]))
+    return result

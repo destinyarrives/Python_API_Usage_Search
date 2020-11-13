@@ -163,3 +163,44 @@ if __name__ == "__main__":
     outfile.close()
 
     print("Time taken: " + (time() - start_time).__str__())
+
+def main(library, api_query):
+    temp = api_query.split("(")
+    # if len > 1, there are keyword queries
+    if len(temp) > 1: 
+        key_string = temp[1][:-1] #"n = 4"
+        FORMATTED_QUERY_KEYS = key_string.split(",")
+    FORMATTED_QUERY_NAME = temp[0] #"sklearn.cluster.KMeans"
+
+    # Open the output file too
+    current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
+    output_function = api_query.replace(".", "-")
+    output_file_name = output_function + "_" + current_time + ".txt"
+    print("Output file: " + output_file_name)
+    outfile = open(output_file_name, 'w', encoding="utf-8")
+
+    total_file_count = 0
+    total_api_instance_count = 0
+    start_time = time()
+
+    PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered")
+
+    # if an api mention is detected in file f, a copy of f will be saved in ../result_snippets/<api query>/<owner--project>/
+    for f in PYTHON_FILEPATHS:
+        processFunctionModified(f)
+
+    #with DummyPool(32) as p:
+    #    p.map(processFunction, search_result)
+
+    for listQ in WRITE_QUEUE.queue:
+        for line in listQ:
+            #print(line)
+            outfile.write(line)
+
+    outfile.write("***APIs evaluated in total: " + str(len(PYTHON_FILEPATHS)) + "\n")
+    outfile.write("***Total file containing the API: " + total_file_count.__str__() + "\n")
+    outfile.write("***Total API usage count: " + total_api_instance_count.__str__() + "\n\n")
+    outfile.write("***Time taken: " + (time() - start_time).__str__() + "\n\n")
+    outfile.close()
+
+    print("Time taken: " + (time() - start_time).__str__())
