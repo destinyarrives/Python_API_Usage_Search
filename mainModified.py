@@ -23,6 +23,8 @@ def processFunctionModified(result):
         global total_file_count
         global WRITE_QUEUE
         global CODE_QUEUE
+        nonlocal total_file_count
+        nonlocal total_api_instance_count
 
         file_type = utils.get_file_type(result)
         if file_type != "py":
@@ -117,6 +119,8 @@ def main(library, api_query):
     try:
         global FORMATTED_QUERY_KEYS
         global FORMATTED_QUERY_NAME
+    except:
+        pass
 
     temp = api_query.split("(")
     # if len > 1, there are keyword queries
@@ -156,5 +160,5 @@ def main(library, api_query):
 
 if __name__ == "__main__":
     torch_apis = process_list_of_torch_apis("torch_apis.txt")
-    for l, q in torch_apis:
+    for l, q in torch_apis[:2]:
         main(l, q)
