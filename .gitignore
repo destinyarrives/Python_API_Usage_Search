@@ -4,6 +4,5 @@
 token.txt
 test.py
 *.txt
-engineered/
-engineeredMaster/
 *.venv
+*/*

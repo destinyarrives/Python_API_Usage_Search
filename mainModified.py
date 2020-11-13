@@ -17,15 +17,10 @@ CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
 
-def find_owner_repo(filepath):
-    temp = filepath.split(os.sep)
-    return temp[]
-
-def processFunctionModified(result, folder_to_move_into):
+def processFunctionModified(result):
     try:
         global total_api_instance_count
         global total_file_count
-        global SEARCHED_REPO
         global WRITE_QUEUE
         global CODE_QUEUE
 
@@ -96,10 +91,15 @@ def processFunctionModified(result, folder_to_move_into):
 
         if is_api_found:
             print(result)
-            copy2(result, folder_to_move_into + "/")
+
+            temp = result.split(os.sep)
+            temp = temp[temp.index("engineered") + 1]
+            p = str(Path.cwd()) + "/result_snippets/" + FORMATTED_QUERY_NAME + "/" + temp
+            Path(p).mkdir(parents = True, exist_ok = True)
+            copy2(result, p)
+
             total_file_count += 1
             listWrite = []
-
             #do we want the info on owner of repo?
             #listWrite.append("Repository: " + p + "\n") 
             listWrite.append("----------------\n")
@@ -117,11 +117,10 @@ if __name__ == "__main__":
 
     if len(sys.argv) < 3:
         print("USAGE: ")
-        print('python search.py "LIBRARY_NAME" "FUNCTION_NAME" "FILE_TO_SEARCH_IN"')
-        print('e.g. : python search.py "scikit-learn" "sklearn.cluster.KMeans" "/asdfasdf/test.py"')
+        print('python search.py "LIBRARY_NAME" "FUNCTION_NAME"')
+        print('e.g. : python search.py "scikit-learn" "sklearn.cluster.KMeans"')
         exit()
 
-    #SEARCH_FILE = sys.argv[3]
     API_QUERY = sys.argv[2] #"sklearn.cluster.KMeans(n = 4)"
     LIBRARY = sys.argv[1] #"scikit-learn"
 
@@ -139,23 +138,15 @@ if __name__ == "__main__":
     print("Output file: " + output_file_name)
     outfile = open(output_file_name, 'w', encoding="utf-8")
 
-    # Prepare folder to move resultant files into <---- NEEDS REWORK
-    p = str(Path.cwd()) + "/result_snippets/" + FORMATTED_QUERY_NAME + "_" + current_time
-    print(p)
-    try:
-        Path(p).mkdir(parents = True, exist_ok = True)
-    except:
-        pass
-
     total_file_count = 0
     total_api_instance_count = 0
-
     start_time = time()
 
-    PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered"/"adaptnlp")
+    PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered")
 
-    for file in PYTHON_FILEPATHS:
-        processFunctionModified(file, p) #<---- PATH NEEDS TO BE DYNAMICALLY SET HERE
+    # if an api mention is detected in file f, a copy of f will be saved in ../result_snippets/<api query>/<owner--project>/
+    for f in PYTHON_FILEPATHS:
+        processFunctionModified(f)
 
     #with DummyPool(32) as p:
     #    p.map(processFunction, search_result)
