@@ -11,11 +11,11 @@ from shutil import copy2
 #from git import Repo
 
 # File wide constant
-PYTHON_FILEPATHS = []
 WRITE_QUEUE = queue.Queue()
 CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
+PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered")
 
 def processFunctionModified(result):
     try:
@@ -113,58 +113,11 @@ def processFunctionModified(result):
     except Exception as e:
         print(e.__str__())
 
-if __name__ == "__main__":
-
-    if len(sys.argv) < 3:
-        print("USAGE: ")
-        print('python search.py "LIBRARY_NAME" "FUNCTION_NAME"')
-        print('e.g. : python search.py "scikit-learn" "sklearn.cluster.KMeans"')
-        exit()
-
-    API_QUERY = sys.argv[2] #"sklearn.cluster.KMeans(n = 4)"
-    LIBRARY = sys.argv[1] #"scikit-learn"
-
-    temp = API_QUERY.split("(")
-    # if len > 1, there are keyword queries
-    if len(temp) > 1: 
-        key_string = temp[1][:-1] #"n = 4"
-        FORMATTED_QUERY_KEYS = key_string.split(",")
-    FORMATTED_QUERY_NAME = temp[0] #"sklearn.cluster.KMeans"
-
-    # Open the output file too
-    current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
-    output_function = API_QUERY.replace(".", "-")
-    output_file_name = output_function + "_" + current_time + ".txt"
-    print("Output file: " + output_file_name)
-    outfile = open(output_file_name, 'w', encoding="utf-8")
-
-    total_file_count = 0
-    total_api_instance_count = 0
-    start_time = time()
-
-    PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered")
-
-    # if an api mention is detected in file f, a copy of f will be saved in ../result_snippets/<api query>/<owner--project>/
-    for f in PYTHON_FILEPATHS:
-        processFunctionModified(f)
-
-    #with DummyPool(32) as p:
-    #    p.map(processFunction, search_result)
-
-    for listQ in WRITE_QUEUE.queue:
-        for line in listQ:
-            #print(line)
-            outfile.write(line)
-
-    outfile.write("***APIs evaluated in total: " + str(len(PYTHON_FILEPATHS)) + "\n")
-    outfile.write("***Total file containing the API: " + total_file_count.__str__() + "\n")
-    outfile.write("***Total API usage count: " + total_api_instance_count.__str__() + "\n\n")
-    outfile.write("***Time taken: " + (time() - start_time).__str__() + "\n\n")
-    outfile.close()
-
-    print("Time taken: " + (time() - start_time).__str__())
-
 def main(library, api_query):
+    try:
+        global FORMATTED_QUERY_KEYS
+        global FORMATTED_QUERY_NAME
+
     temp = api_query.split("(")
     # if len > 1, there are keyword queries
     if len(temp) > 1: 
@@ -176,14 +129,12 @@ def main(library, api_query):
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
     output_function = api_query.replace(".", "-")
     output_file_name = output_function + "_" + current_time + ".txt"
-    print("Output file: " + output_file_name)
+    #print("Output file: " + output_file_name)
     outfile = open(output_file_name, 'w', encoding="utf-8")
 
     total_file_count = 0
     total_api_instance_count = 0
     start_time = time()
-
-    PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered")
 
     # if an api mention is detected in file f, a copy of f will be saved in ../result_snippets/<api query>/<owner--project>/
     for f in PYTHON_FILEPATHS:
@@ -203,4 +154,7 @@ def main(library, api_query):
     outfile.write("***Time taken: " + (time() - start_time).__str__() + "\n\n")
     outfile.close()
 
-    print("Time taken: " + (time() - start_time).__str__())
+if __name__ == "__main__":
+    torch_apis = process_list_of_torch_apis("torch_apis.txt")
+    for l, q in torch_apis:
+        main(l, q)
