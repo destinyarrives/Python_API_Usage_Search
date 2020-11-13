@@ -31,10 +31,8 @@ if __name__ == "__main__":
 
     successes, failures = 0, 0
     for repo, url in repo_urls.items():
-        if successes > 30:
-            break
         try:
-            r = repo.replace("/", "_")
+            r = repo.replace("/", "--")
             p = Path.cwd()/"engineered"/r
             Path(p).mkdir(parents = True, exist_ok = True)
             print(f"Cloning {url}")
