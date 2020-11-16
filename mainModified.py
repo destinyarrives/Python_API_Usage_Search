@@ -16,7 +16,6 @@ CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
 PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered")
-ERRORS = []
 
 def processFunctionModified(result):
     file_count, api_instance_count = 0, 0
@@ -118,7 +117,6 @@ def main(library, api_query):
     try:
         global FORMATTED_QUERY_KEYS
         global FORMATTED_QUERY_NAME
-        global ERRORS
     except:
         pass
 
@@ -132,8 +130,8 @@ def main(library, api_query):
     # Open the output file too
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
     output_function = api_query.replace(".", "-")
-    output_file_name = output_function + "_" + current_time + ".txt"
-    output_err_name = output_function + "_" + current_time + "_errors.txt"
+    output_file_name = str(Path.cwd()/"result_summaries") + os.sep + output_function + "_" + current_time + ".txt"
+    output_err_name = str(Path.cwd()/"result_errors") + os.sep + output_function + "_" + current_time + "_errors.txt"
     print(f"...Output file: {output_file_name}")
     outfile = open(output_file_name, 'w', encoding="utf-8")
     errorfile = open(output_err_name, "w", encoding="utf-8") # <-- file opened but how to 
@@ -166,6 +164,9 @@ def main(library, api_query):
     errorfile.close()
 
 if __name__ == "__main__":
+    (Path.cwd()/"result_summaries").mkdir(exist_ok = True)
+    (Path.cwd()/"result_errors").mkdir(exist_ok = True)
+
     # torch_apis = process_list_of_torch_apis("torch_apis.txt")
     torch_apis = [("PyTorch", "is_tensor")]
     for l, q in torch_apis:

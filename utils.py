@@ -171,5 +171,3 @@ def process_list_of_torch_apis(list_of_apis_file):
                 l = line.split(".", 1)
                 result.append((l[0], l[1]))
     return result
-
-print(len(process_list_of_torch_apis("torch_apis.txt")))
