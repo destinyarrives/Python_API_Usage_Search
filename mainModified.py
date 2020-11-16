@@ -16,10 +16,10 @@ CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
 PYTHON_FILEPATHS = utils.get_all_py_files(Path.cwd()/"engineered")
+ERRORS = []
 
 def processFunctionModified(result):
     file_count, api_instance_count = 0, 0
-
     try:
         global WRITE_QUEUE
         global CODE_QUEUE
@@ -57,7 +57,6 @@ def processFunctionModified(result):
 
         # SAVE THE FILE TO COUNT THE RECALL LATER:
 
-
         api_name = FORMATTED_QUERY_NAME.split(".")[-1] #takes the method name in the api call, eg "relu" from "tf.nn.relu"
         list_processed_api = process_api_format(tree, api_name) #returns list of dict objects
         is_api_found = False
@@ -92,8 +91,6 @@ def processFunctionModified(result):
                     is_api_found = True
 
         if is_api_found:
-            #print(result)
-
             temp = result.split(os.sep)
             temp = temp[temp.index("engineered") + 1]
             p = str(Path.cwd()) + "/result_snippets/" + FORMATTED_QUERY_NAME + "/" + temp
@@ -102,8 +99,6 @@ def processFunctionModified(result):
 
             file_count += 1
             listWrite = []
-            #do we want the info on owner of repo?
-            #listWrite.append("Repository: " + p + "\n") 
             listWrite.append("----------------\n")
             listWrite.append("File path: " + result + "\n")
             for text in list_api_location:
@@ -114,14 +109,16 @@ def processFunctionModified(result):
             WRITE_QUEUE.put(listWrite)
     except Exception as e:
         print(e.__str__())
-
-    return file_count, api_instance_count
+    
+    # if api_instance_count > 0: print(api_instance_count)
+    return (file_count, api_instance_count)
 
 def main(library, api_query):
     tfc, tapic = 0, 0
     try:
         global FORMATTED_QUERY_KEYS
         global FORMATTED_QUERY_NAME
+        global ERRORS
     except:
         pass
 
@@ -136,16 +133,23 @@ def main(library, api_query):
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
     output_function = api_query.replace(".", "-")
     output_file_name = output_function + "_" + current_time + ".txt"
+    output_err_name = output_function + "_" + current_time + "_errors.txt"
     print(f"...Output file: {output_file_name}")
     outfile = open(output_file_name, 'w', encoding="utf-8")
+    errorfile = open(output_err_name, "w", encoding="utf-8") # <-- file opened but how to 
 
     start_time = time()
 
     # if an api mention is detected in file f, a copy of f will be saved in ../result_snippets/<api query>/<owner--project>/
     for f in PYTHON_FILEPATHS:
-        total_file_count, total_api_instance_count = processFunctionModified(f)
-        tfc += total_file_count
-        tapic += total_api_instance_count
+        try:
+            total_file_count, total_api_instance_count = processFunctionModified(f)
+            tfc += total_file_count
+            tapic += total_api_instance_count
+        except:
+            errorfile.write(f + "\n")
+
+        # processFunctionModified(f)
 
     #with DummyPool(32) as p:
     #    p.map(processFunction, search_result)
@@ -159,10 +163,11 @@ def main(library, api_query):
     outfile.write("***Total API usage count: " + tapic.__str__() + "\n\n")
     outfile.write("***Time taken: " + (time() - start_time).__str__() + "\n\n")
     outfile.close()
+    errorfile.close()
 
 if __name__ == "__main__":
-    torch_apis = process_list_of_torch_apis("torch_apis.txt")
-    # torch_apis = [("PyTorch", "is_tensor"), ("PyTorch", "conv2d")]
+    # torch_apis = process_list_of_torch_apis("torch_apis.txt")
+    torch_apis = [("PyTorch", "is_tensor")]
     for l, q in torch_apis:
         print(f"Querying for {q}...")
         main(l, q)
