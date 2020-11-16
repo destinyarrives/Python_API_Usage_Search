@@ -22,17 +22,6 @@ def processFunctionModified(result):
     try:
         global WRITE_QUEUE
         global CODE_QUEUE
-        # nonlocal file_count
-        # nonlocal api_instance_count
-
-        file_type = utils.get_file_type(result)
-        if file_type != "py":
-            return
-
-        #print("Searching for API usage in: ")
-        #print("    Repository name: " + repository_name)
-        #print("        File path: " + current_file.path)
-
         """
         # Check if current file is contained within site-packages or venv
         list_not_processed = [".git", "venv", "site-packages", "sklearn"]
@@ -53,8 +42,6 @@ def processFunctionModified(result):
             tree = ast.parse(decoded_file_content)
         except:
             return
-
-        # SAVE THE FILE TO COUNT THE RECALL LATER:
 
         api_name = FORMATTED_QUERY_NAME.split(".")[-1] #takes the method name in the api call, eg "relu" from "tf.nn.relu"
         list_processed_api = process_api_format(tree, api_name) #returns list of dict objects
@@ -109,7 +96,6 @@ def processFunctionModified(result):
     except Exception as e:
         print(e.__str__())
     
-    # if api_instance_count > 0: print(api_instance_count)
     return (file_count, api_instance_count)
 
 def main(library, api_query):
@@ -134,7 +120,7 @@ def main(library, api_query):
     output_err_name = str(Path.cwd()/"result_errors") + os.sep + output_function + "_" + current_time + "_errors.txt"
     print(f"...Output file: {output_file_name}")
     outfile = open(output_file_name, 'w', encoding="utf-8")
-    errorfile = open(output_err_name, "w", encoding="utf-8") # <-- file opened but how to 
+    errorfile = open(output_err_name, "w", encoding="utf-8")
 
     start_time = time()
 
@@ -147,11 +133,8 @@ def main(library, api_query):
         except:
             errorfile.write(f + "\n")
 
-        # processFunctionModified(f)
-
     #with DummyPool(32) as p:
     #    p.map(processFunction, search_result)
-
     for listQ in WRITE_QUEUE.queue:
         for line in listQ:
             outfile.write(line)
@@ -167,8 +150,8 @@ if __name__ == "__main__":
     (Path.cwd()/"result_summaries").mkdir(exist_ok = True)
     (Path.cwd()/"result_errors").mkdir(exist_ok = True)
 
-    # torch_apis = process_list_of_torch_apis("torch_apis.txt")
-    torch_apis = [("PyTorch", "is_tensor")]
+    torch_apis = process_list_of_torch_apis("torch_apis.txt")
+    # torch_apis = [("PyTorch", "is_tensor")]
     for l, q in torch_apis:
         print(f"Querying for {q}...")
         main(l, q)
