@@ -151,12 +151,6 @@ def get_all_py_files(directory):
                 p.append(filepath)
     return p
 
-def write_list_of_files(list_of_files):
-    outfile = open("listOfPythonFiles", 'w', encoding="utf-8")
-    for item in list_of_files:
-        outfile.write(item)
-    outfile.close()
-
 def process_list_of_torch_apis(list_of_apis_file):
     result, entered = [], []
     f = open(list_of_apis_file, "r")
