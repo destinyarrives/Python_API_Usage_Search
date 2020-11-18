@@ -77,11 +77,12 @@ def processFunctionModified(result):
                     is_api_found = True
 
         if is_api_found:
-            temp = result.split(os.sep)
-            temp = temp[temp.index("engineered") + 1]
-            p = str(Path.cwd()) + "/result_snippets/" + FORMATTED_QUERY_NAME + "/" + temp
-            Path(p).mkdir(parents = True, exist_ok = True)
-            copy2(result, p)
+            # previously, if a 
+            # temp = result.split(os.sep)
+            # temp = temp[temp.index("engineered") + 1]
+            # p = str(Path.cwd()) + "/result_snippets/" + FORMATTED_QUERY_NAME + "/" + temp
+            # Path(p).mkdir(parents = True, exist_ok = True)
+            # copy2(result, p)
 
             file_count += 1
             listWrite = []
