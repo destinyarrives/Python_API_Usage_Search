@@ -21,6 +21,8 @@ def extract():
                 continue
             with open(str(p) + os.sep + filename, "r") as f:
                 result = f.read()
+                if not result:
+                    continue
                 result = result.split("***Python files evaluated in total: ")[1]
                 python, result = result.split("\n***Total files containing the API: ")
                 files, result = result.split("\n***Total API usage count: ")
