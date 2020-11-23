@@ -2,6 +2,12 @@ from pathlib import Path
 import os
 import pandas as pd
 
+"""
+Run in main folder, it reads all the text files in /result_summaries and summarises the results in the last three lines. 
+Output will be a .csv file 
+"""
+
+
 PYTHON_FILES_TOTAL, FILES_CONTAINING_API_TOTAL, API_USAGE_TOTAL = 0, 0, 0
 APISTATS = {}
 
