@@ -1,3 +1,4 @@
+torch.nn.Conv2d
 torch.is_tensor
 torch.is_storage
 torch.is_complex
@@ -331,7 +332,6 @@ torch.nn.ModuleDict
 torch.nn.ParameterList
 torch.nn.ParameterDict
 torch.nn.Conv1d
-torch.nn.Conv2d
 torch.nn.Conv3d
 torch.nn.ConvTranspose1d
 torch.nn.ConvTranspose2d
