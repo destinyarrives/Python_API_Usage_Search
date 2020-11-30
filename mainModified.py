@@ -107,7 +107,8 @@ def main(library, api_query):
     except:
         pass
 
-    temp = api_query.split("(")
+    temp_query = library + "." + api_query
+    temp = temp_query.split("(")
     # if len > 1, there are keyword queries
     if len(temp) > 1: 
         key_string = temp[1][:-1] #"n = 4"
