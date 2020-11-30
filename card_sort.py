@@ -6,10 +6,10 @@ from random import sample
 result = {}
 new_location = Path.cwd()/"manual_analysis"
 new_location.mkdir(exist_ok = True)
-with open("nn-Conv2d_November-19-2020_1433PM.txt", "r") as f:
+with open("nn-Conv2d_November-30-2020_1427PM.txt", "r") as f:
     contents = f.read()
     contents = contents.split("----------------")[1:]
-    for item in sample(contents, 50):
+    for item in sample(contents, 100):
         filepath = item.partition("File path: ")[2].partition("\nAPI Invocation")[0]
         filename1 = filepath.partition("--")[2].partition("/")[0]
         filename2 = filepath.split("/")[-1]
@@ -19,7 +19,5 @@ with open("nn-Conv2d_November-19-2020_1433PM.txt", "r") as f:
 i = 0
 with open("manualAnalysis.txt", "w") as outfile:
     for fn, fp in result.items():
-        # print(fn, fp)
-        # print(new_location/fn)
-        # copy2(fp, new_location/fn)    
+        copy2(fp, new_location/fn)    
         outfile.write(fp + "\n\n")
