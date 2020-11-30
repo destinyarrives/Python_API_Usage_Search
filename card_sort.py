@@ -6,7 +6,7 @@ from random import sample
 result = {}
 new_location = Path.cwd()/"manual_analysis"
 new_location.mkdir(exist_ok = True)
-with open("add_November-17-2020_0713AM.txt", "r") as f:
+with open("nn-Conv2d_November-19-2020_1433PM.txt", "r") as f:
     contents = f.read()
     contents = contents.split("----------------")[1:]
     for item in sample(contents, 50):
@@ -17,10 +17,9 @@ with open("add_November-17-2020_0713AM.txt", "r") as f:
         result[filename] = filepath
 
 i = 0
-for fn, fp in result.items():
-    i += 1
-    # print(fn, fp)
-    # print(new_location/fn)
-    copy2(fp, new_location/fn)    
-    if i > 5:
-        break
+with open("manualAnalysis.txt", "w") as outfile:
+    for fn, fp in result.items():
+        # print(fn, fp)
+        # print(new_location/fn)
+        # copy2(fp, new_location/fn)    
+        outfile.write(fp + "\n\n")
