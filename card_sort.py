@@ -6,7 +6,7 @@ from random import sample
 result = {}
 new_location = Path.cwd()/"manual_analysis"
 new_location.mkdir(exist_ok = True)
-with open("nn-Conv2d_November-30-2020_1427PM.txt", "r") as f:
+with open("result_summaries/nn-Conv2d_November-30-2020_1427PM.txt", "r") as f:
     contents = f.read()
     contents = contents.split("----------------")[1:]
     for item in sample(contents, 100):
