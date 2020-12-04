@@ -1,12 +1,13 @@
 from pathlib import Path
-import os
+import os, sys
 from shutil import copy2 
 from random import sample
 
 result = {}
 new_location = Path.cwd()/"manual_analysis"
 new_location.mkdir(exist_ok = True)
-with open("result_summaries/nn-Conv2d_November-30-2020_1427PM.txt", "r") as f:
+input_file = sys.argv[1]
+with open(input_file, "r") as f:
     contents = f.read()
     contents = contents.split("----------------")[1:]
     for item in sample(contents, 100):
