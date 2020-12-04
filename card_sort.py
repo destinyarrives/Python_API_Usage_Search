@@ -1,5 +1,5 @@
 from pathlib import Path
-import os, sys
+import os
 from shutil import copy2 
 from random import sample
 
@@ -7,7 +7,7 @@ result = {}
 new_location = Path.cwd()/"manual_analysis"
 new_location.mkdir(exist_ok = True)
 input_file = sys.argv[1]
-with open(input_file, "r") as f:
+with open(str(Path.cwd()) + "/" + input_file, "r") as f:
     contents = f.read()
     contents = contents.split("----------------")[1:]
     for item in sample(contents, 100):
