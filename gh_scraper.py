@@ -8,7 +8,7 @@ pages = [f"https://reporeapers.github.io/results/{i}.html" for i in range(1, 449
 
 list_output = []
 i = 0
-for page in pages[:15]:
+for page in pages:
     i += 1
     if i == 5:
         sleeptime = random.uniform(5, 10)
