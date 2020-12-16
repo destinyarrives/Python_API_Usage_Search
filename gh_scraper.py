@@ -8,12 +8,13 @@ pages = [f"https://reporeapers.github.io/results/{i}.html" for i in range(1, 449
 
 list_output = []
 i = 0
-for page in pages:
+for page in pages[:15]:
     i += 1
     if i == 5:
-        sleeptime = random.uniform(2, 4)
+        sleeptime = random.uniform(5, 10)
         sleep(sleeptime)
         i = 0
+        print(f"Sleeping for {sleeptime} seconds...")
     page_contents = requests.get(page)
     soup = BeautifulSoup(page_contents.content, 'html.parser')
     result = soup.find_all(name = "tr")
