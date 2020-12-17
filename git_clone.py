@@ -3,7 +3,7 @@ from pathlib import Path
 from datetime import datetime
 import pandas as pd
 
-def generate_list_of_urls_to_download(csv_file):
+def generate_list_of_urls_from_csv(csv_file):
     """
     input: output file from main.py
     output: dict of urls that can be fed into download_raw_file function 
@@ -19,7 +19,7 @@ def generate_list_of_urls_to_download(csv_file):
 
 if __name__ == "__main__":
 
-    repo_urls = generate_list_of_urls_to_download("projects.csv")
+    repo_urls = generate_list_of_urls_from_csv("projects.csv")
 
     # creates folder to contain repos, if it doesn't already exist
     Path(Path.cwd()/"engineered").mkdir(exist_ok = True)
