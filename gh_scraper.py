@@ -9,6 +9,7 @@ pages = [f"https://reporeapers.github.io/results/{i}.html" for i in range(1, 449
 list_output = []
 for page in pages:
     page_contents = requests.get(page)
+    print(f"Processing {page}...")
     soup = BeautifulSoup(page_contents.content, 'html.parser')
     result = soup.find_all(name = "tr")
 
