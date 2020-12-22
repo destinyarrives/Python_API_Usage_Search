@@ -11,3 +11,5 @@ test.py
 *.twb
 *.twbr
 Schedule.xlsx
+*.csv
+scraping/ghscraperlog.txt
