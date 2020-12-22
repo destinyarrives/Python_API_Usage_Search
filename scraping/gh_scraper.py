@@ -4,7 +4,8 @@ import pandas as pd
 from numpy import random
 from time import sleep
 
-pages = [f"https://reporeapers.github.io/results/{i}.html" for i in range(1, 4497)]
+# current page is at 0
+pages = [f"https://reporeapers.github.io/results/{i}.html" for i in range(1, 100)]
 
 list_output = []
 outfile = open("ghscraperlog.txt", 'w', encoding="utf-8")
@@ -25,7 +26,7 @@ for page in pages:
                         temp.append(td.a.next_sibling.next_sibling["href"])
             list_output.append(temp)
         
-        sleeptime = random.uniform(5, 10)
+        sleeptime = random.uniform(4, 6)
         sleep(sleeptime)
     except:
         outfile.write(page + "\n")

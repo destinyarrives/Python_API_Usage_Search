@@ -17,6 +17,14 @@ def generate_list_of_urls_from_csv(csv_file):
     dict_of_urls = dict(zip(df["GitHub Repo"], df["GitHub Link"]))
     return dict_of_urls
 
+def do_git_clone(dict_of_urls):
+    """
+    uses list of github urls and clones them into a folder- the naming structure will be ../engineered/<project name>/
+
+    input: output from generate_list_of_urls_from_csv function 
+    output: 
+    """
+    
 if __name__ == "__main__":
 
     repo_urls = generate_list_of_urls_from_csv("projects.csv")
