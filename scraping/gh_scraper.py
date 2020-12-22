@@ -13,7 +13,7 @@ def modify_df(csv_file):
 # current page is at 100
 # max = 4497
 start, end = sys.argv[1], sys.argv[2]
-pages = [f"https://reporeapers.github.io/results/{i}.html" for i in range(start, end)]
+pages = [f"https://reporeapers.github.io/results/{i}.html" for i in range(int(start), int(end))]
 
 list_output = []
 outfile = open("ghscraperlog.txt", 'w', encoding="utf-8") # open file to write down pages that produced errors
