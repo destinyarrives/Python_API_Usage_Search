@@ -4,11 +4,11 @@ import pandas as pd
 from numpy import random
 from time import sleep
 
-def modify_df(csv_file):
+def analyse_scraped_csv(csv_file, lang, stars):
     df = pd.read_csv(csv_file)
     df["cscore"] = df["Org Score Based"] + df["Org Random Forest"] + df["Util Score Based"] + df["Util Random Forest"]
-    df = df[(df["cscore"] >= 4) & (df["Language"] == "Python")]
-    df.to_csv("3andup.csv", index = False, mode = "a")
+    df = df[(df["cscore"] >= stars) & (df["Language"] == lang)]
+    df.to_csv(f"{lang}_{stars}.csv", index = False)
 
 # current page is at 100
 # max = 4497
