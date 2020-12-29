@@ -44,7 +44,13 @@ df = pd.DataFrame(list_output, columns = ["Repo", "Web", "Language", "Architectu
                                           "Issues", "License", "Size", "Unit Test", "State", "Stars", "Org Score Based", "Org Random Forest",
                                           "Util Score Based", "Util Random Forest", "Timestamp"])
 df["Size"] = df["Size"].str.replace(",", "").astype(int)
-df.to_csv("reaper_results.csv", mode = "a", index = False, header = False)
+if sys.arvg[3] == "restart":
+    df.to_csv("reaper_results.csv", index = False)
+else:
+    f = pd.read_csv("reaper_results.csv", index_col = False)
+    f = f.append(df, ignore_index = True)
+    df.to_csv("reaper_results.csv")
+
 
 
 
