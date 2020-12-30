@@ -44,7 +44,7 @@ df = pd.DataFrame(list_output, columns = ["Repo", "Web", "Language", "Architectu
                                           "Issues", "License", "Size", "Unit Test", "State", "Stars", "Org Score Based", "Org Random Forest",
                                           "Util Score Based", "Util Random Forest", "Timestamp"])
 df["Size"] = df["Size"].str.replace(",", "").astype(int)
-if sys.arvg[3] == "restart":
+if sys.argv[3] == "restart":
     df.to_csv("reaper_results.csv", index = False)
 else:
     f = pd.read_csv("reaper_results.csv", index_col = False)
