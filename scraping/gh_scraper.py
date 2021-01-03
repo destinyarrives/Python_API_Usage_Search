@@ -43,7 +43,11 @@ outfile.close()
 df = pd.DataFrame(list_output, columns = ["Repo", "Web", "Language", "Architecture", "Community", "CL", "Documentation", "History",
                                           "Issues", "License", "Size", "Unit Test", "State", "Stars", "Org Score Based", "Org Random Forest",
                                           "Util Score Based", "Util Random Forest", "Timestamp"])
-df["Size"] = df["Size"].str.replace(",", "").astype(int)
+try:
+    df["Size"] = df["Size"].str.replace(",", "").astype(float)
+except:
+    print("oops didn't work")
+    
 if sys.argv[3] == "restart":
     df.to_csv("reaper_results.csv", index = False)
 else:
