@@ -50,9 +50,9 @@ if __name__ == "__main__":
                 Path(p).mkdir(parents = True, exist_ok = True)
 
                 print(f"Cloning {url}")
-                r = git.Repo.clone_from(url = url, to_path = p)
-                sha = repo.head.commit.hexsha
-                short_sha = repo.git.rev_parse(sha, short=4)
+                gitrepo = git.Repo.clone_from(url = url, to_path = p)
+                sha = gitrepo.head.commit.hexsha
+                short_sha = gitrepo.git.rev_parse(sha, short=4)
                 commit_hashes[url] = short_sha
 
                 successes += 1
