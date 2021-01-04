@@ -61,8 +61,8 @@ if __name__ == "__main__":
             outfile.write(url + "\n")
             failures += 1
 
-    d = pd.DataFrame([commit_hashes])
+    d = pd.DataFrame.from_records(commit_hashes)
     d.to_csv("python_commit_hashes.csv", index = False)
 
     outfile.close()
-    print(f"Repositories were cloned from Github! Sucess:{successes} Fail:{failures}")
+    print(f"Repositories were cloned from Github! Success: {successes} Fail: {failures}")
