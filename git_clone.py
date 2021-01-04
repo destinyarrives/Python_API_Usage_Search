@@ -61,7 +61,7 @@ if __name__ == "__main__":
             outfile.write(url + "\n")
             failures += 1
 
-    d = pd.DataFrame.from_dict(commit_hashes, orient = "index", columns = ["URL", "Hash"])
+    d = pd.DataFrame.from_dict(commit_hashes, orient = "index", columns = ["Hash"])
     d.to_csv("python_commit_hashes.csv", index = False)
 
     outfile.close()
