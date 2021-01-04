@@ -17,6 +17,7 @@ def generate_list_of_urls_from_csv(csv_file, mode):
         dict_of_urls = dict(zip(df["GitHub Repo"], df["GitHub Link"]))
     elif int(mode) == 2:
         df = pd.read_csv(csv_file)
+        df.dropna(how="all", inplace=True) 
         dict_of_urls = dict(zip(df["Repo"], df["Web"]))
     return dict_of_urls
 
