@@ -13,3 +13,4 @@ test.py
 Schedule.xlsx
 *.csv
 scraping/ghscraperlog.txt
+*.ipynb
