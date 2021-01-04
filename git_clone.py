@@ -43,7 +43,7 @@ if __name__ == "__main__":
     successes, failures = 0, 0
     commit_hashes = {}
     for repo, url in repo_urls.items():
-        print(repo, url)
+        print(type(repo))
         if repo and url:
             try:
                 r = repo.replace("/", "--")
