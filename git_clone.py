@@ -43,22 +43,23 @@ if __name__ == "__main__":
     successes, failures = 0, 0
     commit_hashes = {}
     for repo, url in repo_urls.items():
-        try:
-            r = repo.replace("/", "--")
-            p = Path("/media/haoteng")/"python"/r
-            Path(p).mkdir(parents = True, exist_ok = True)
+        if repo and url:
+            try:
+                r = repo.replace("/", "--")
+                p = Path("/media/haoteng")/"python"/r
+                Path(p).mkdir(parents = True, exist_ok = True)
 
-            print(f"Cloning {url}")
-            r = git.Repo.clone_from(url = url, to_path = p)
-            sha = repo.head.commit.hexsha
-            short_sha = repo.git.rev_parse(sha, short=4)
-            commit_hashes[url] = short_sha
+                print(f"Cloning {url}")
+                r = git.Repo.clone_from(url = url, to_path = p)
+                sha = repo.head.commit.hexsha
+                short_sha = repo.git.rev_parse(sha, short=4)
+                commit_hashes[url] = short_sha
 
-            successes += 1
+                successes += 1
 
-        except:
-            outfile.write(url + "\n")
-            failures += 1
+            except:
+                outfile.write(url + "\n")
+                failures += 1
 
     d = pd.DataFrame.from_dict(commit_hashes)
     d.to_csv("python_commit_hashes.csv", index = False)
