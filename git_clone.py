@@ -10,12 +10,12 @@ def generate_list_of_urls_from_csv(csv_file, mode):
             eg - "Project-MONAI/MONAI":"https://github.com/Project-MONAI/MONAI"
     """
     #results_file = codecs.open("sklearn-cluster-KMeans_October-21-2020_1426PM.txt", "r", encoding="utf-8")
-    if mode == 1:
+    if int(mode) == 1:
         df = pd.read_csv(csv_file)
         df = df[df["Final Label"] == "Y"]
         df["GitHub Link"] = "https://github.com/" + df["GitHub Repo"]
         dict_of_urls = dict(zip(df["GitHub Repo"], df["GitHub Link"]))
-    elif mode == 2:
+    elif int(mode) == 2:
         df = pd.read_csv(csv_file)
         dict_of_urls = dict(zip(df["Repo"], df["Web"]))
     return dict_of_urls
