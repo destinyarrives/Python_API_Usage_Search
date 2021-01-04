@@ -43,8 +43,7 @@ if __name__ == "__main__":
     successes, failures = 0, 0
     commit_hashes = {}
     for repo, url in repo_urls.items():
-        print(type(repo))
-        if repo and url:
+        if repo != "nan":
             try:
                 r = repo.replace("/", "--")
                 p = Path("/media/haoteng")/"python"/r
