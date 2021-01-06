@@ -6,6 +6,7 @@ test.py
 *.txt
 *.venv
 */*
+!data/*
 !torch_apis.txt
 !scraping/*
 *.twb
