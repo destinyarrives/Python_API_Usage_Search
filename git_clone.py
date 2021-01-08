@@ -3,7 +3,7 @@ from pathlib import Path
 from datetime import datetime
 import pandas as pd
 
-def generate_list_of_urls_from_csv(csv_file, mode):
+def generate_list_of_urls_from_csv(csv_file, mode = 2):
     """
     input: output file from main.py
     output: dict of urls that can be fed into download_raw_file function 
@@ -30,11 +30,13 @@ def generate_list_of_urls_from_csv(csv_file, mode):
 #     """
     
 if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Usage: first argument = source of csv file, second argument = mode")
     csv = sys.argv[1]
     repo_urls = generate_list_of_urls_from_csv(csv, sys.argv[2]) # second argument represents mode
 
     # creates folder to contain repos, if it doesn't already exist
-    Path(Path.cwd()/"python").mkdir(exist_ok = True)
+    Path(Path.cwd()/"java").mkdir(exist_ok = True)
 
     # opens file to record repos that encountered errors
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
