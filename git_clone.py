@@ -35,8 +35,8 @@ if __name__ == "__main__":
     csv = sys.argv[1]
     repo_urls = generate_list_of_urls_from_csv(csv, sys.argv[2]) # second argument represents mode
 
-    # creates folder to contain repos, if it doesn't already exist
-    Path(Path.cwd()/"java").mkdir(exist_ok = True)
+    # # creates folder to contain repos, if it doesn't already exist
+    # Path(Path.cwd()/"java").mkdir(exist_ok = True)
 
     # opens file to record repos that encountered errors
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     for repo, url in repo_urls.items():
         try:
             r = repo.replace("/", "--")
-            p = Path("/media/haoteng")/"python"/r
+            p = Path("/media/haoteng")/"java"/r
             Path(p).mkdir(parents = True, exist_ok = True)
 
             print(f"Cloning {url}")
