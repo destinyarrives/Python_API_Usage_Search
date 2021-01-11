@@ -15,3 +15,4 @@ Schedule.xlsx
 *.csv
 scraping/ghscraperlog.txt
 *.ipynb
+*.pyc
