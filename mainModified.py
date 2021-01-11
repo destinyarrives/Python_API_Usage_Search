@@ -15,7 +15,7 @@ WRITE_QUEUE = queue.Queue()
 CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
-PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
+PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python_test")
 APIS = process_list_of_apis("data/py_functions_processed_short.txt")
 
 def processFunctionModified(result):
