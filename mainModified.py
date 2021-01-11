@@ -15,24 +15,14 @@ WRITE_QUEUE = queue.Queue()
 CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
-PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/engineered")
+PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
+APIS = process_list_of_apis("")
 
 def processFunctionModified(result):
     file_count, api_instance_count = 0, 0
     try:
         global WRITE_QUEUE
         global CODE_QUEUE
-        """
-        # Check if current file is contained within site-packages or venv
-        list_not_processed = [".git", "venv", "site-packages", "sklearn"]
-        contain_not_processed = False
-        for term in list_not_processed: 
-            if term in current_file.path: #see if term is in path of current file we're checking
-                contain_not_processed = True
-                break
-        if contain_not_processed:
-            return None
-        """
 
         try:
             decoded_file_content = get_file_contents(result) #opens and reads .py file coming in
@@ -149,12 +139,18 @@ def main(library, api_query):
     errorfile.close()
 
 if __name__ == "__main__":
+    """
+    Usage of script:
+    input: list of apis to search for
+           directory of projects to search through
+    output: 
+    """
     (Path.cwd()/"result_summaries").mkdir(exist_ok = True)
     (Path.cwd()/"result_errors").mkdir(exist_ok = True)
 
-    torch_apis = process_list_of_torch_apis("torch_apis.txt")
+    # torch_apis = process_list_of_torch_apis("torch_apis.txt")
     # torch_apis = [("PyTorch", "is_tensor")]
-    for l, q in torch_apis:
+    for l, q in APIS:
         print(f"Querying for {q}...")
         main(l, q)
         with WRITE_QUEUE.mutex:

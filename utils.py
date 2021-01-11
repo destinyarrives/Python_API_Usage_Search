@@ -151,7 +151,7 @@ def get_all_py_files(directory):
                 p.append(filepath)
     return p
 
-def process_list_of_torch_apis(list_of_apis_file):
+def process_list_of_apis(list_of_apis_file):
     result, entered = [], []
     f = open(list_of_apis_file, "r")
     text = f.read()
