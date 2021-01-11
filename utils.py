@@ -148,7 +148,13 @@ def get_all_py_files(directory):
             filepath = subdir + os.sep + filename
 
             if filepath.endswith(".py"):
-                p.append(filepath)
+                # check to see if the python script can be compiled, to save time in the searching step
+                try:
+                    source = open(filepath, 'r').read() + '\n'
+                    compile(source, filepath, 'exec')
+                    p.append(filepath)
+                except:
+                    continue
     return p
 
 def process_list_of_apis(list_of_apis_file):
