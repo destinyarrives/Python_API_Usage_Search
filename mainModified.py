@@ -7,6 +7,7 @@ from api_formatter import *
 import pandas as pd
 from pathlib import Path
 from shutil import copy2 
+import json
 
 #from git import Repo
 
@@ -162,14 +163,11 @@ if __name__ == "__main__":
     (Path.cwd()/"result_summaries").mkdir(exist_ok = True)
     (Path.cwd()/"result_errors").mkdir(exist_ok = True)
 
-    startTime = datetime.now().strftime("%B-%d-%Y_%H%M%p")
-    try:
-        index = build_index()
-        print(index)
-    except RecursionError as re:
-        print("Recursion Error occured at")
-    endTime = datetime.now().strftime("%B-%d-%Y_%H%M%p")
-    print(f"Time taken: {endTime - startTime}")
+    index = build_index()
+    print("Indexing Complete!")
+
+    with open('index.json', 'w') as indexfile:
+        json.dump(index, indexfile)
 
 
     # torch_apis = process_list_of_torch_apis("torch_apis.txt")
