@@ -23,7 +23,8 @@ with open("verified_python_files.txt") as datafile:
 
 def build_index():
     index = {}
-    for api in APIS:
+    temp_api = [i[0] + "." + i[1] for i in APIS]
+    for api in temp_api:
         index[api] = []
         for pyfile in PYTHON_FILEPATHS:
             with open(pyfile, "r") as pf:
