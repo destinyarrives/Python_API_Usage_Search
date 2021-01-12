@@ -19,3 +19,4 @@ scraping/ghscraperlog.txt
 *.xlsx
 data/.DS_Store
 .DS_Store
+result_snippets/.DS_Store
