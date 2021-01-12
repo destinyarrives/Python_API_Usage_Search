@@ -16,3 +16,6 @@ Schedule.xlsx
 scraping/ghscraperlog.txt
 *.ipynb
 *.pyc
+*.xlsx
+data/.DS_Store
+.DS_Store
