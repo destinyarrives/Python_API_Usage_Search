@@ -20,7 +20,7 @@ PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
 APIS = process_list_of_apis("data/py_functions_processed.txt")
 
 with open("verified_python_files.txt", "w") as ot:
-    for line in ot:
+    for line in PYTHON_FILEPATHS:
         ot.write(f"{line}\n")
 
 def cheap_search(api, codefile):
