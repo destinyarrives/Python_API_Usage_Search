@@ -15,26 +15,21 @@ WRITE_QUEUE = queue.Queue()
 CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
-PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
+# PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
 # APIS = process_list_of_apis("data/py_functions_processed_short.txt")
-APIS = process_list_of_apis("data/py_functions_processed.txt")
-
-with open("verified_python_files.txt", "w") as ot:
-    for line in PYTHON_FILEPATHS:
-        ot.write(f"{line}\n")
-
-def cheap_search(api, codefile):
-    with open(codefile, "r") as cf:
-        code = cf.read()
-        return code.find(api)
+APIS = process_list_of_apis("data/py_functions_processed_short.txt")
+with open("verified_python_files.txt") as datafile:
+    PYTHON_FILEPATHS = datafile.read().split("\n")[:-1]
 
 def build_index():
     index = {}
     for api in APIS:
         index[api] = []
         for pyfile in PYTHON_FILEPATHS:
-            if cheap_search(api, pyfile) != -1:
-                index[api].append(pyfile)
+            with open(pyfile, "r") as pf:
+                code = pf.read()
+                if code.find(api) != -1:
+                    index[api].append(pyfile)
 
 def processFunction(result):
     file_count, api_instance_count = 0, 0
