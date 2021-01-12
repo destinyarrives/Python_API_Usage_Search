@@ -16,7 +16,8 @@ CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
 PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
-APIS = process_list_of_apis("data/py_functions_processed_short.txt")
+# APIS = process_list_of_apis("data/py_functions_processed_short.txt")
+APIS = process_list_of_apis("data/py_functions_processed.txt")
 
 def cheap_search(api, codefile):
     with open(codefile, "r") as cf:
@@ -161,13 +162,23 @@ if __name__ == "__main__":
     (Path.cwd()/"result_summaries").mkdir(exist_ok = True)
     (Path.cwd()/"result_errors").mkdir(exist_ok = True)
 
+    startTime = datetime.now().strftime("%B-%d-%Y_%H%M%p")
+    try:
+        index = build_index()
+        print(index)
+    except RecursionError as re:
+        print("Recursion Error occured at")
+    endTime = datetime.now().strftime("%B-%d-%Y_%H%M%p")
+    print(f"Time taken: {endTime - startTime}")
+
+
     # torch_apis = process_list_of_torch_apis("torch_apis.txt")
     # torch_apis = [("PyTorch", "is_tensor")]
-    for l, q in APIS:
-        print(f"Querying for {q}...")
-        #TODO implement cheap search
-        main(l, q)
-        with WRITE_QUEUE.mutex:
-            WRITE_QUEUE.queue.clear()
-        with CODE_QUEUE.mutex:
-            CODE_QUEUE.queue.clear()
+    # for l, q in APIS:
+    #     print(f"Querying for {q}...")
+    #     #TODO implement cheap search
+    #     main(l, q)
+    #     with WRITE_QUEUE.mutex:
+    #         WRITE_QUEUE.queue.clear()
+    #     with CODE_QUEUE.mutex:
+    #         CODE_QUEUE.queue.clear()
