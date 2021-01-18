@@ -171,3 +171,17 @@ def process_list_of_apis(list_of_apis_file):
                 l = line.split(".", 1)
                 result.append((l[0], l[1]))
     return result
+
+def process_list_of_libraries(list_of_apis_file):
+    result, entered = [], []
+    f = open(list_of_apis_file, "r")
+    text = f.read()
+    text = text.split("\n")
+    for line in text:
+        if line == "---------":
+            continue
+        else:
+            if line not in entered:
+                entered.append(line)
+                result.append(line)
+    return result

@@ -18,7 +18,7 @@ FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
 # PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
 # APIS = process_list_of_apis("data/py_functions_processed_short.txt")
-APIS = process_list_of_apis("data/py_libraries_processed.txt")
+APIS = process_list_of_libraries("data/py_libraries_processed.txt")
 with open("data/verified_python_files.txt") as datafile:
     PYTHON_FILEPATHS = datafile.read().split("\n")[:-1]
 
