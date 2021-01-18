@@ -18,13 +18,14 @@ FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
 # PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
 # APIS = process_list_of_apis("data/py_functions_processed_short.txt")
-APIS = process_list_of_apis("data/py_functions_processed.txt")
-with open("verified_python_files.txt") as datafile:
+APIS = process_list_of_apis("data/py_libraries_processed.txt")
+with open("data/verified_python_files.txt") as datafile:
     PYTHON_FILEPATHS = datafile.read().split("\n")[:-1]
 
 def build_index():
     index = {}
-    temp_api = [i[0] + "." + i[1] for i in APIS]
+    # temp_api = [i[0] + "." + i[1] for i in APIS]
+    temp_api = APIS
     for api in temp_api:
         index[api] = []
         for pyfile in PYTHON_FILEPATHS:
