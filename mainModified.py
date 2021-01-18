@@ -32,6 +32,7 @@ def build_index():
                 code = pf.read()
                 if code.find(api) != -1:
                     index[api].append(pyfile)
+        print(f"{api} indexed")
 
 def processFunction(result):
     file_count, api_instance_count = 0, 0

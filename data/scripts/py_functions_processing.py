@@ -1,5 +1,5 @@
 from pandas.io.json._normalize import nested_to_record
-import json
+import json, sys
 
 def detect_spaces(api_name):
     """
@@ -14,7 +14,7 @@ def detect_spaces(api_name):
         return tokens[0] + "." + ".".join(tokens[2:])
     return False # returns false if api name is well-structured
 
-def process_dict(datadict):
+def process_functions(datadict):
     """
     input : 
 
@@ -39,15 +39,34 @@ def process_dict(datadict):
             output.append(".".join(item))
     return output
 
-# change path to where py_functions.json is stored
-with open("data/py_functions.json") as datafile:
-    data = json.load(datafile)
+def process_libraries(datadict):
+    """
+    output: ['IPython', 'OpenSSL', ...]
+    """
+    output = []
+    for package in datadict.keys(): # detail being a list of lists
+        output.append(package)
+    return output
 
-# writes list of methods to search for in a textfile
-with open("data/py_functions_processed.txt", "w") as outfile:
-    data = process_dict(data)
-    for item in data:
-        outfile.write(item + "\n")
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        sys.exit("If extraction should be done on library level, please call script with argv[1] == 'l'; for function level use 'f'. ")
+    
+    JSON_FILE_LOCATION = "../py_functions.json"
+    OUTPUT_FILE_LOCATION = "../py_libraries_processed.txt"
+
+    # change path to where py_functions.json is stored
+    with open(JSON_FILE_LOCATION) as datafile:
+        data = json.load(datafile)
+
+    # writes list of methods to search for in a textfile
+    with open(OUTPUT_FILE_LOCATION, "w") as outfile:
+        if sys.argv[1] == "l":
+            data = process_libraries(data)
+        else:
+            data = process_functions(data)
+        for item in data:
+            outfile.write(item + "\n")
 
 
 # flat = nested_to_record(data, sep = '.') # flattens dictionary to the last level of indentation but without handling lists
