@@ -20,15 +20,16 @@ FORMATTED_QUERY_KEYS = []
 # APIS = process_list_of_apis("data/py_functions_processed_short.txt")
 APIS = process_list_of_libraries("data/py_libraries_processed.txt")
 with open("data/new_python_files.txt") as datafile:
-    PYTHON_FILEPATHS = datafile.read().split("\n")[:-1]
+    # PYTHON_FILEPATHS = datafile.read().split("\n")[:-1]
+    PYTHON_FILEPATHS = datafile.read().split("\n")
 
 def build_index():
     index = {a:[] for a in APIS}
     #* temp_api = [i[0] + "." + i[1] for i in APIS] <- use this for when function level search through APIS
-    for pyfile in PYTHON_FILEPATHS[:5000]:
+    for pyfile in PYTHON_FILEPATHS:
         with open(pyfile, "r") as pf:
+            code = pf.read()
             for api in APIS:
-                code = pf.read()
                 if code.find(api) != -1:
                     index[api].append(pyfile)
                     print(f"{api} found in {pyfile}")
