@@ -19,7 +19,7 @@ FORMATTED_QUERY_KEYS = []
 # PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
 # APIS = process_list_of_apis("data/py_functions_processed_short.txt")
 APIS = process_list_of_libraries("data/py_libraries_processed.txt")
-with open("data/verified_python_files.txt") as datafile:
+with open("data/new_python_files.txt") as datafile:
     PYTHON_FILEPATHS = datafile.read().split("\n")[:-1]
 
 def build_index():
@@ -27,13 +27,13 @@ def build_index():
     # temp_api = [i[0] + "." + i[1] for i in APIS]
     temp_api = APIS
     for api in temp_api:
+        print(f"Indexing {api}...")
         index[api] = []
         for pyfile in PYTHON_FILEPATHS:
             with open(pyfile, "r") as pf:
                 code = pf.read()
                 if code.find(api) != -1:
                     index[api].append(pyfile)
-        print(f"{api} indexed")
 
 def processFunction(result):
     file_count, api_instance_count = 0, 0
