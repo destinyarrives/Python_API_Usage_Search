@@ -25,13 +25,14 @@ with open("data/new_python_files.txt") as datafile:
 def build_index():
     index = {a:[] for a in APIS}
     #* temp_api = [i[0] + "." + i[1] for i in APIS] <- use this for when function level search through APIS
-    for pyfile in PYTHON_FILEPATHS:
+    for pyfile in PYTHON_FILEPATHS[:5000]:
         with open(pyfile, "r") as pf:
             for api in APIS:
                 code = pf.read()
                 if code.find(api) != -1:
                     index[api].append(pyfile)
                     print(f"{api} found in {pyfile}")
+    return index
 
 def processFunction(result):
     file_count, api_instance_count = 0, 0
