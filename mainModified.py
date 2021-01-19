@@ -23,14 +23,11 @@ with open("data/new_python_files.txt") as datafile:
     PYTHON_FILEPATHS = datafile.read().split("\n")[:-1]
 
 def build_index():
-    index = {}
-    # temp_api = [i[0] + "." + i[1] for i in APIS]
-    temp_api = APIS
-    for api in temp_api:
-        print(f"Indexing {api}...")
-        index[api] = []
-        for pyfile in PYTHON_FILEPATHS:
-            with open(pyfile, "r") as pf:
+    index = {a:[] for a in APIS[:2]}
+    #* temp_api = [i[0] + "." + i[1] for i in APIS] <- use this for when function level search through APIS
+    for pyfile in PYTHON_FILEPATHS:
+        with open(pyfile, "r") as pf:
+            for api in APIS[:2]:
                 code = pf.read()
                 if code.find(api) != -1:
                     index[api].append(pyfile)
