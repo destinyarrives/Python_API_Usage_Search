@@ -17,8 +17,8 @@ CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
 # PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
-# APIS = process_list_of_apis("data/py_functions_processed_short.txt")
-APIS = process_list_of_libraries("data/py_libraries_processed.txt")
+APIS = process_list_of_apis("data/py_functions_processed_short.txt")
+# APIS = process_list_of_libraries("data/py_libraries_processed.txt")
 with open("data/new_python_files.txt") as datafile:
     # PYTHON_FILEPATHS = datafile.read().split("\n")[:-1]
     PYTHON_FILEPATHS = datafile.read().split("\n")
@@ -169,7 +169,7 @@ if __name__ == "__main__":
     print("Indexing Complete!")
 
     with open('index.json', 'w') as indexfile:
-        json.dump(index, indexfile)
+        json.dump(index, indexfile, indent = 4)
 
 
     # torch_apis = process_list_of_torch_apis("torch_apis.txt")

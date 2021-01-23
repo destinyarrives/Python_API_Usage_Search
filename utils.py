@@ -185,3 +185,7 @@ def process_list_of_libraries(list_of_apis_file):
                     entered.append(line)
                     result.append(line)
     return result
+
+def process_list_of_apis_from_libraries():
+    library2file = open()
+    

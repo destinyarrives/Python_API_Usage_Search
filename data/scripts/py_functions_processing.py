@@ -48,25 +48,42 @@ def process_libraries(datadict):
         output.append(package)
     return output
 
+def lib2func_dict(datadict):
+    output = {}
+    for package, detail in datadict.items():
+        output[package] = []
+        for item in detail:
+            output[package].append(item[-1] + "(")
+    return output 
+
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        sys.exit("If extraction should be done on library level, please call script with argv[1] == 'l'; for function level use 'f'. ")
+    #! not needed
+    # if len(sys.argv) == 1:
+    #     sys.exit("If extraction should be done on library level, please call script with argv[1] == 'l'; for function level use 'f'. ")
     
     JSON_FILE_LOCATION = "../py_functions.json"
-    OUTPUT_FILE_LOCATION = "../py_libraries_processed.txt"
+    OUTPUT_FILE_LOCATION = "../py_libraries2functions.txt"
 
     # change path to where py_functions.json is stored
     with open(JSON_FILE_LOCATION) as datafile:
         data = json.load(datafile)
 
+    data = lib2func_dict(data)
+
+    if isinstance(data, dict):
+        print("dict output detected")
+        with open('../lib2func.json', 'w') as indexfile:
+                json.dump(data, indexfile, indent = 4)
+    else:
     # writes list of methods to search for in a textfile
-    with open(OUTPUT_FILE_LOCATION, "w") as outfile:
-        if sys.argv[1] == "l":
-            data = process_libraries(data)
-        else:
-            data = process_functions(data)
-        for item in data:
-            outfile.write(item + "\n")
+        with open(OUTPUT_FILE_LOCATION, "w") as outfile:
+            #! not needed
+            # if sys.argv[1] == "l":
+            #     data = process_libraries(data)
+            # else:
+            #     data = process_functions(data)
+            for item in data:
+                outfile.write(item + "\n")
 
 
 # flat = nested_to_record(data, sep = '.') # flattens dictionary to the last level of indentation but without handling lists
