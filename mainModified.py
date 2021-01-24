@@ -173,8 +173,8 @@ if __name__ == "__main__":
     with open("data/final_search_v2.json") as f:
         data = json.load(f)
     
-    for library, dicts in data.keys():
-        for function, files in dicts.keys():
+    for library, dicts in data.items():
+        for function, files in dicts.items():
             print(f"Querying for {function}...")
             main(function, files)
             with WRITE_QUEUE.mutex:
