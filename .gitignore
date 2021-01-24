@@ -24,3 +24,4 @@ result_snippets/.DS_Store
 data/verified_python_files.txt
 data/index.json
 data/testdata/*
+final_search.json
