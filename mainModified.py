@@ -16,7 +16,6 @@ WRITE_QUEUE = queue.Queue()
 CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
-APIS = process_list_of_apis("data/py_functions_processed_short.txt")
 # APIS = process_list_of_libraries("data/py_libraries_processed.txt")
 # with open("data/new_python_files.txt") as datafile:
 #     PYTHON_FILEPATHS = datafile.read().split("\n")
@@ -171,7 +170,7 @@ if __name__ == "__main__":
 
     # torch_apis = process_list_of_torch_apis("torch_apis.txt")
     # torch_apis = [("PyTorch", "is_tensor")]
-    with open("data/final_search.json") as f:
+    with open("data/final_search_v2.json") as f:
         data = json.load(f)
     
     for library, dicts in data.keys():
