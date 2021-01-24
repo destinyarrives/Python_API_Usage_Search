@@ -16,14 +16,12 @@ WRITE_QUEUE = queue.Queue()
 CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
-# PYTHON_FILEPATHS = utils.get_all_py_files("/media/haoteng/python")
 APIS = process_list_of_apis("data/py_functions_processed_short.txt")
 # APIS = process_list_of_libraries("data/py_libraries_processed.txt")
-with open("data/new_python_files.txt") as datafile:
-    # PYTHON_FILEPATHS = datafile.read().split("\n")[:-1]
-    PYTHON_FILEPATHS = datafile.read().split("\n")
+# with open("data/new_python_files.txt") as datafile:
+#     PYTHON_FILEPATHS = datafile.read().split("\n")
 
-def build_index():
+def build_index(): #should be depracated in favour of using aho-corasick algo search
     index = {a:[] for a in APIS}
     #* temp_api = [i[0] + "." + i[1] for i in APIS] <- use this for when function level search through APIS
     for pyfile in PYTHON_FILEPATHS:
@@ -106,16 +104,15 @@ def processFunction(result):
     
     return (file_count, api_instance_count)
 
-def main(library, api_query):
+def main(query, filepaths):
     tfc, tapic = 0, 0
     try:
         global FORMATTED_QUERY_KEYS
         global FORMATTED_QUERY_NAME
     except:
         pass
-
-    temp_query = library + "." + api_query
-    temp = temp_query.split("(")
+    function_name = query.split(".")[-1]
+    temp = query.split("(")
     # if len > 1, there are keyword queries
     if len(temp) > 1: 
         key_string = temp[1][:-1] #"n = 4"
@@ -124,7 +121,7 @@ def main(library, api_query):
 
     # Open the output file too
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
-    output_function = api_query.replace(".", "-")
+    output_function = function_name.replace(".", "-")
     output_file_name = str(Path.cwd()/"result_summaries") + os.sep + output_function + "_" + current_time + ".txt"
     output_err_name = str(Path.cwd()/"result_errors") + os.sep + output_function + "_" + current_time + "_errors.txt"
     print(f"...Output file: {output_file_name}")
@@ -134,7 +131,7 @@ def main(library, api_query):
     start_time = time()
 
     # if an api mention is detected in file f, a copy of f will be saved in ../result_snippets/<api query>/<owner--project>/
-    for f in PYTHON_FILEPATHS:
+    for f in filepaths:
         try:
             total_file_count, total_api_instance_count = processFunction(f)
             tfc += total_file_count
@@ -148,7 +145,7 @@ def main(library, api_query):
         for line in listQ:
             outfile.write(line)
 
-    outfile.write("***Python files evaluated in total: " + str(len(PYTHON_FILEPATHS)) + "\n")
+    outfile.write("***Python files evaluated in total: " + str(len(filepaths)) + "\n")
     outfile.write("***Total files containing the API: " + tfc.__str__() + "\n")
     outfile.write("***Total API usage count: " + tapic.__str__() + "\n\n")
     outfile.write("***Time taken: " + (time() - start_time).__str__() + "\n\n")
@@ -165,20 +162,23 @@ if __name__ == "__main__":
     (Path.cwd()/"result_summaries").mkdir(exist_ok = True)
     (Path.cwd()/"result_errors").mkdir(exist_ok = True)
 
-    index = build_index()
-    print("Indexing Complete!")
+    # index = build_index()
+    # print("Indexing Complete!")
 
-    with open('index.json', 'w') as indexfile:
-        json.dump(index, indexfile, indent = 4)
+    # with open('index.json', 'w') as indexfile:
+    #     json.dump(index, indexfile, indent = 4)
 
 
     # torch_apis = process_list_of_torch_apis("torch_apis.txt")
     # torch_apis = [("PyTorch", "is_tensor")]
-    # for l, q in APIS:
-    #     print(f"Querying for {q}...")
-    #     #TODO implement cheap search
-    #     main(l, q)
-    #     with WRITE_QUEUE.mutex:
-    #         WRITE_QUEUE.queue.clear()
-    #     with CODE_QUEUE.mutex:
-    #         CODE_QUEUE.queue.clear()
+    with open("data/final_search.json") as f:
+        data = json.load(f)
+    
+    for library, dicts in data.keys():
+        for function, files in dicts.keys():
+            print(f"Querying for {function}...")
+            main(function, files)
+            with WRITE_QUEUE.mutex:
+                WRITE_QUEUE.queue.clear()
+            with CODE_QUEUE.mutex:
+                CODE_QUEUE.queue.clear()

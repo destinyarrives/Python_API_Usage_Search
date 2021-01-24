@@ -1,6 +1,4 @@
-import ahocorasick
-import numpy as np
-import pandas as pd
+import ahocorasick, json
 
 def acsearch(haystacks, needles):
     for k, v in haystacks.items():
@@ -17,22 +15,48 @@ def acsearch(haystacks, needles):
                     if haystack not in output[k][original_value]:
                         output[k][original_value].append(haystack)
 
-with open("data/py_libraries_processed.txt") as lf:
-    libraries = lf.read().split("\n")[:-1]
+# with open("data/py_libraries_processed.txt") as lf:
+#     libraries = lf.read().split("\n")[:-1]
+# with open("data/view.json") as jsonfile:
+#     haystacks = json.load(jsonfile)
+# with open("data/lib2func.json") as jsonfile:
+#     needles = json.load(jsonfile)
 
-with open("data/view.json") as jsonfile:
-    haystacks = json.load(jsonfile)
+# output = {}
+# for lib, funcs in needles.items():
+#     output[lib] = {}
+#     for fun in funcs:
+#         output[lib][fun] = []
 
-with open("data/lib2func.json") as jsonfile:
-    needles = json.load(jsonfile)
+# with open('final_search.json', 'w') as indexfile:
+#     json.dump(output, indexfile, indent = 4) 
 
-output = {}
-for lib, funcs in needles.items():
-    output[lib] = {}
-    for fun in funcs:
-        output[lib][fun] = []
+def clean_final_json():
+    # this function is such a dirty fix but it'll have to do for now... :')
+    with open("../final_search.json") as jfile:
+        data = json.load(jfile)
+    with open("../py_functions.json") as tfile:
+        functions = json.load(tfile)
+    
+    output = {}
+    for library, dicts in data.items():
+        output[library] = {} 
+        for function, files in dicts.items():
+            if not files:
+                continue
+            fqn = match_fqn(functions, library, function)
+            output[library][fqn] = files
+    
+    return output
 
+def match_fqn(fdict, lib, fun):
+    templist = fdict[lib]
+    for item in templist:
+        if item[-1] == fun[:-1]:
+            return (".".join(item))
 
+if __name__ == '__main__':
+    with open("../final_search_v2.json", "w") as outfile:
+        output = clean_final_json()
+        json.dump(output, outfile, indent = 4)
 
-with open('final_search.json', 'w') as indexfile:
-    json.dump(output, indexfile, indent = 4) 
