@@ -170,7 +170,6 @@ if __name__ == "__main__":
     # torch_apis = process_list_of_torch_apis("torch_apis.txt")
     # torch_apis = [("PyTorch", "is_tensor")]
 
-    """
     with open("data/final_search_v2.json") as f:
         data = json.load(f)
     
@@ -182,9 +181,9 @@ if __name__ == "__main__":
                 WRITE_QUEUE.queue.clear()
             with CODE_QUEUE.mutex:
                 CODE_QUEUE.queue.clear()
-    """
-    main("numpy.zeros_like()", ["/media/haoteng/python/gem--oq-engine/openquake/hazardlib/gsim/bindi_2014.py"])
-    with WRITE_QUEUE.mutex:
-        WRITE_QUEUE.queue.clear()
-    with CODE_QUEUE.mutex:
-        CODE_QUEUE.queue.clear()
+    
+    # main("numpy.zeros_like()", ["/media/haoteng/python/gem--oq-engine/openquake/hazardlib/gsim/bindi_2014.py"])
+    # with WRITE_QUEUE.mutex:
+    #     WRITE_QUEUE.queue.clear()
+    # with CODE_QUEUE.mutex:
+    #     CODE_QUEUE.queue.clear()
