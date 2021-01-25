@@ -82,6 +82,7 @@ def match_fqn(fdict, lib, fun):
     templist = fdict[lib]
     for item in templist:
         if item[-1] == func[:-1]:
+            #TODO account for whether function belongs to module or class
             return (".".join(item))
 
 if __name__ == '__main__':
