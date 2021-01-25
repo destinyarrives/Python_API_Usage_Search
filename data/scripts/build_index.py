@@ -89,7 +89,10 @@ if __name__ == '__main__':
         python_files = python_files.read().split("\n")
     with open("../py_libraries_processed.txt", "r") as python_libraries:
         python_libraries = python_libraries.read().split("\n")
-    acsearch_library_level(python_files, python_libraries)
+    result = acsearch_library_level(python_files, python_libraries)
+
+    with open("../library_results.json", "w") as outfile:
+        json.dump(result, outfile, indent = 4)
 
     
 
