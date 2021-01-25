@@ -110,7 +110,6 @@ def main(query, filepaths):
         global FORMATTED_QUERY_NAME
     except:
         pass
-    function_name = query.split(".")[-1]
     temp = query.split("(")
     # if len > 1, there are keyword queries
     if len(temp) > 1: 
@@ -120,7 +119,7 @@ def main(query, filepaths):
 
     # Open the output file too
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
-    output_function = function_name.replace(".", "-")
+    output_function = query.replace(".", "-")
     output_file_name = str(Path.cwd()/"result_summaries") + os.sep + output_function + "_" + current_time + ".txt"
     output_err_name = str(Path.cwd()/"result_errors") + os.sep + output_function + "_" + current_time + "_errors.txt"
     print(f"...Output file: {output_file_name}")
@@ -184,4 +183,8 @@ if __name__ == "__main__":
             with CODE_QUEUE.mutex:
                 CODE_QUEUE.queue.clear()
     """
-    main("numpy.zeros_like", "/media/haoteng/python/gem--oq-engine/openquake/hazardlib/gsim/bindi_2014.py")
+    main("numpy.zeros_like()", ["/media/haoteng/python/gem--oq-engine/openquake/hazardlib/gsim/bindi_2014.py"])
+    with WRITE_QUEUE.mutex:
+        WRITE_QUEUE.queue.clear()
+    with CODE_QUEUE.mutex:
+        CODE_QUEUE.queue.clear()
