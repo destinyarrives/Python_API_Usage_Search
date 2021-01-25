@@ -2,6 +2,16 @@ import ahocorasick, json
 import numpy as np
 import pandas as pd
 
+"""
+There's a problem where, in lib2func.json, to get the short function string for cheap matching the module/class names are stripped away which 
+prevents the functions from being uniquely identified. Hence, when constructing the dictionary to be returned by the acsearch functions
+they are not differentiated and the final result of final_search only contains one copy of the differentiated functions. Eg: there are multiple versions
+of "argsort" - numpy.ma.core.MaskedConstant.argsort" and "numpy.argsort". 
+
+Finally, clean_final_json matches the "argsort(" string back only to the first instance of the argsort function and the rest of the copies of argsort 
+are lost. 
+"""
+
 def acsearch_library_level(haystacks, needles):
     output = {}
     for lib in needles:
@@ -60,24 +70,45 @@ def acsearch(haystacks, needles):
 # with open('final_search.json', 'w') as indexfile:
 #     json.dump(output, indexfile, indent = 4) 
 
-def clean_final_json():
-    # this function is such a dirty fix but it'll have to do for now... :')
+def clean_final_json(): # this function is such a dirty fix but it'll have to do for now... :')
     with open("../testdata/final_search.json") as jfile:
         data = json.load(jfile) # data = {library:{truncated function:[file names]}}
     with open("../py_functions.json") as tfile:
         functions = json.load(tfile) # functions = default python functions json from Divya
     
     output = {}
-    for library, dicts in data.items(): # dicts = {truncated function:[file names]}
-        output[library] = {} 
-        for function, files in dicts.items(): # function eg: "get_include("; files eg: ["/media/haoteng/python/Theano--Theano/theano/gpuarray/linalg.py", etc ...]
-            if not files: # check if files list is empty- which happens if string matching doesn't find hits for a given api
+
+    for library, list_functions in functions.items():
+        output[library] = {}
+        for functions in list_functions:
+            list_files = reverse_match_fqn(functions[2], data[library])
+            if not list_files:
                 continue
-            fqn = match_fqn(functions, library, function) # fqn = "lxml.lxml.get_include"
-            output[library][fqn] = files
+            if functions[1][0].isupper():
+                temp_key = ".".join(functions)
+            else:
+                temp_key = functions[0] + "." + functions[2]
+            output[library][temp_key] = list_files
     
     return output
 
+    # for library, dicts in data.items(): # dicts = {truncated function:[file names]}
+    #     output[library] = {} 
+    #     for function, files in dicts.items(): # function eg: "get_include("; files eg: ["/media/haoteng/python/Theano--Theano/theano/gpuarray/linalg.py", etc ...]
+    #         if not files: # check if files list is empty- which happens if string matching doesn't find hits for a given api
+    #             continue
+    #         fqn = match_fqn(functions, library, function) # fqn = "lxml.lxml.get_include"
+    #         output[library][fqn] = files
+    
+    # return output
+
+# get list of relevant files using the fqn from py_functions.json
+def reverse_match_fqn(string_fragment, datadict):
+    for key, value in datadict.items():
+        if key[:-1] == string_fragment:
+            return value
+
+# get the fqn using the partial api string 
 def match_fqn(fdict, lib, fun):
     """
     Because of the possibility that function might originate from a modeule or class, match_fqn checks to see if the second term in the py_functions.json
@@ -93,7 +124,7 @@ def match_fqn(fdict, lib, fun):
                 return item[0] + "." + item[2]
 
 if __name__ == '__main__':
-    with open("../final_search_v3.json", "w") as outfile:
+    with open("../final_search_v4.json", "w") as outfile:
         output = clean_final_json()
         json.dump(output, outfile, indent = 4)
 
