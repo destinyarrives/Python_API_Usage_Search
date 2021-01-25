@@ -89,7 +89,7 @@ if __name__ == '__main__':
     #     output = clean_final_json()
     #     json.dump(output, outfile, indent = 4)
 
-    with open("../verified_python_files.txt", "r") as python_files:
+    with open("../testdata/new_python_files.txt", "r") as python_files:
         python_files = python_files.read().split("\n")
     with open("../testdata/py_libraries_processed_test.txt", "r") as python_libraries:
         python_libraries = python_libraries.read().split("\n")
