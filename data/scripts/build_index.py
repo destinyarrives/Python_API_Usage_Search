@@ -4,7 +4,7 @@ import pandas as pd
 
 def acsearch_library_level(haystacks, needles):
     output = {}
-    for lib in haystacks:
+    for lib in needles:
         output[lib] = []
 
     A = ahocorasick.Automaton()
@@ -12,12 +12,16 @@ def acsearch_library_level(haystacks, needles):
         A.add_word(key, (idx, key))
     A.make_automaton()
 
+    ct = 0
     for f in haystacks:
+        if (ct % 10000) == 0:
+            print(f"processed {ct} files...")
         with open(f, "r") as haystack:
             haystack = haystack.read()
             for end_index, (insert_order, original_value) in A.iter(haystack):
                 if f not in output[original_value]:
                     output[original_value].append(f)
+        ct += 1
 
     return output
 
@@ -89,7 +93,7 @@ if __name__ == '__main__':
         python_files = python_files.read().split("\n")
     with open("../py_libraries_processed.txt", "r") as python_libraries:
         python_libraries = python_libraries.read().split("\n")
-    result = acsearch_library_level(python_files, python_libraries)
+    result = acsearch_library_level(haystacks = python_files, needles = python_libraries)
 
     with open("../library_results.json", "w") as outfile:
         json.dump(result, outfile, indent = 4)
