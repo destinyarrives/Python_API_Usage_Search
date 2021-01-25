@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     with open("../verified_python_files.txt", "r") as python_files:
         python_files = python_files.read().split("\n")
-    with open("../py_libraries_processed.txt", "r") as python_libraries:
+    with open("../testdata/py_libraries_processed_test.txt", "r") as python_libraries:
         python_libraries = python_libraries.read().split("\n")
     result = acsearch_library_level(haystacks = python_files, needles = python_libraries)
 
