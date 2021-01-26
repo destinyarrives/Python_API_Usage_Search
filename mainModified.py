@@ -170,7 +170,7 @@ if __name__ == "__main__":
     # torch_apis = process_list_of_torch_apis("torch_apis.txt")
     # torch_apis = [("PyTorch", "is_tensor")]
 
-    with open("data/final_search_v4_test.json") as f:
+    with open("data/final_search_v4.json") as f:
         data = json.load(f)
     
     for dicts in data.values():
