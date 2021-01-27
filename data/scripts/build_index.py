@@ -124,18 +124,18 @@ def match_fqn(fdict, lib, fun):
                 return item[0] + "." + item[2]
 
 if __name__ == '__main__':
-    # with open("../final_search_v4.json", "w") as outfile:
-    #     output = clean_final_json()
-    #     json.dump(output, outfile, indent = 4)
+    with open("../final_search_v4.json", "w") as outfile:
+        output = clean_final_json()
+        json.dump(output, outfile, indent = 4)
 
-    with open("../verified_python_files.txt", "r") as python_files:
-        python_files = python_files.read().split("\n")
-    with open("../py_libraries_processed.txt", "r") as python_libraries:
-        python_libraries = python_libraries.read().split("\n")
-    result = acsearch_library_level(haystacks = python_files, needles = python_libraries)
+    # with open("../verified_python_files.txt", "r") as python_files:
+    #     python_files = python_files.read().split("\n")
+    # with open("../py_libraries_processed.txt", "r") as python_libraries:
+    #     python_libraries = python_libraries.read().split("\n")
+    # result = acsearch_library_level(haystacks = python_files, needles = python_libraries)
 
-    with open("../library_results.json", "w") as outfile:
-        json.dump(result, outfile, indent = 4)
+    # with open("../library_results.json", "w") as outfile:
+    #     json.dump(result, outfile, indent = 4)
 
     
 
