@@ -20,6 +20,7 @@ if __name__ == '__main__':
     new_location = Path.cwd()/"manual_analysis"
     new_location.mkdir(exist_ok = True)
     DIRECTORY = "data/testdata/temp_results/1_260121"
+    random.seed("hope this was useful lol")
 
     all_apis = []
     for subdir, dirs, files in os.walk(DIRECTORY): 
