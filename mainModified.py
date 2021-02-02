@@ -160,30 +160,36 @@ if __name__ == "__main__":
     (Path.cwd()/"result_summaries").mkdir(exist_ok = True)
     (Path.cwd()/"result_errors").mkdir(exist_ok = True)
 
-    # index = build_index()
-    # print("Indexing Complete!")
+    # # index = build_index()
+    # # print("Indexing Complete!")
 
-    # with open('index.json', 'w') as indexfile:
-    #     json.dump(index, indexfile, indent = 4)
+    # # with open('index.json', 'w') as indexfile:
+    # #     json.dump(index, indexfile, indent = 4)
 
 
-    # torch_apis = process_list_of_torch_apis("torch_apis.txt")
-    # torch_apis = [("PyTorch", "is_tensor")]
+    # # torch_apis = process_list_of_torch_apis("torch_apis.txt")
+    # # torch_apis = [("PyTorch", "is_tensor")]
 
-    with open("data/final_search_v4.json") as f:
-        data = json.load(f)
+    # with open("data/final_search_v4.json") as f:
+    #     data = json.load(f)
     
-    for dicts in data.values():
-        for function, files in dicts.items():
-            print(f"Querying for {function}...")
-            main(function, files)
-            with WRITE_QUEUE.mutex:
-                WRITE_QUEUE.queue.clear()
-            with CODE_QUEUE.mutex:
-                CODE_QUEUE.queue.clear()
+    # for dicts in data.values():
+    #     for function, files in dicts.items():
+    #         print(f"Querying for {function}...")
+    #         main(function, files)
+    #         with WRITE_QUEUE.mutex:
+    #             WRITE_QUEUE.queue.clear()
+    #         with CODE_QUEUE.mutex:
+    #             CODE_QUEUE.queue.clear()
     
-    # main("numpy.zeros_like()", ["/media/haoteng/python/gem--oq-engine/openquake/hazardlib/gsim/bindi_2014.py"])
-    # with WRITE_QUEUE.mutex:
-    #     WRITE_QUEUE.queue.clear()
-    # with CODE_QUEUE.mutex:
-    #     CODE_QUEUE.queue.clear()
+    # # main("numpy.zeros_like()", ["/media/haoteng/python/gem--oq-engine/openquake/hazardlib/gsim/bindi_2014.py"])
+    # # with WRITE_QUEUE.mutex:
+    # #     WRITE_QUEUE.queue.clear()
+    # # with CODE_QUEUE.mutex:
+    # #     CODE_QUEUE.queue.clear()
+
+    main("simplejson.simplejson.dumps", ["hue--test_iterable.py"])
+    with WRITE_QUEUE.mutex:
+        WRITE_QUEUE.queue.clear()
+    with CODE_QUEUE.mutex:
+        CODE_QUEUE.queue.clear()

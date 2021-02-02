@@ -19,7 +19,8 @@ def find_files_from_result(c):
 if __name__ == '__main__':
     new_location = Path.cwd()/"manual_analysis"
     new_location.mkdir(exist_ok = True)
-    DIRECTORY = "data/testdata/temp_results/1_260121"
+    DIRECTORY = Path.cwd()/"1_260121"
+    random.seed("lol if you're seeing this, I hope I was helpful :')")
 
     all_apis = []
     for subdir, dirs, files in os.walk(DIRECTORY): 
@@ -31,12 +32,14 @@ if __name__ == '__main__':
         print(f"choosing {api}")
         ct = 0 #TODO possibly automate this for average accuracy computation using pandas?
 
-        folder = api.split("/")[4].split(".")[0]
+        folder = api.split("/")[5].split(".")[0]
         with open(api, "r") as f:
             contents = f.read()
             output_dict = find_files_from_result(contents)
         with open(f"manualAnalysis_{ct}.txt", "w") as outfile:
             for fn, fp in output_dict.items():
+                tempfolder = Path.cwd()/"manual_analysis"/folder
+                tempfolder.mkdir(exist_ok = True)
                 copy2(fp, new_location/folder/fn) #! need to further organise by api 
                 outfile.write(fp + "\n\n")
         ct += 1
