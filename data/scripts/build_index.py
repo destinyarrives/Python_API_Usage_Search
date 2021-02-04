@@ -3,13 +3,11 @@ import numpy as np
 import pandas as pd
 
 """
-There's a problem where, in lib2func.json, to get the short function string for cheap matching the module/class names are stripped away which 
-prevents the functions from being uniquely identified. Hence, when constructing the dictionary to be returned by the acsearch functions
-they are not differentiated and the final result of final_search only contains one copy of the differentiated functions. Eg: there are multiple versions
-of "argsort" - numpy.ma.core.MaskedConstant.argsort" and "numpy.argsort". 
+I've chose to do the index twice for the following reason: given a FQN "tensorflow.python.keras.engine.base_layer.Metric.call()", one import the api with
+"from tensorflow.python.keras.engine.base_layer.Metric import call", or call it with the FQN itself. 
 
-Finally, clean_final_json matches the "argsort(" string back only to the first instance of the argsort function and the rest of the copies of argsort 
-are lost. 
+Hence, I first search for the library name "tensorflow", then from the results that contain the string "tensorflow" I search for the substring "call("
+to generate candidates to iterate through using main.py. 
 """
 
 def acsearch_library_level(haystacks, needles):
@@ -35,19 +33,6 @@ def acsearch_library_level(haystacks, needles):
 
     return output
 
-# with open("data/py_libraries_processed.txt") as lf:
-#     libraries = lf.read().split("\n")[:-1]
-# with open("data/view.json") as jsonfile:
-#     haystacks = json.load(jsonfile)
-# with open("data/lib2func.json") as jsonfile:
-#     needles = json.load(jsonfile)
-
-# output = {}
-# for lib, funcs in needles.items():
-#     output[lib] = {}
-#     for fun in funcs:
-#         output[lib][fun] = []
-
 def acsearch(haystacks, needles):
     output = {}
 
@@ -66,9 +51,6 @@ def acsearch(haystacks, needles):
                         output[k][original_value].append(haystack)
     
     return output
-
-# with open('final_search.json', 'w') as indexfile:
-#     json.dump(output, indexfile, indent = 4) 
 
 def clean_final_json(): # this function is such a dirty fix but it'll have to do for now... :')
     with open("../testdata/final_search.json") as jfile:
@@ -92,6 +74,7 @@ def clean_final_json(): # this function is such a dirty fix but it'll have to do
     
     return output
 
+    #! previous erroneous version that 
     # for library, dicts in data.items(): # dicts = {truncated function:[file names]}
     #     output[library] = {} 
     #     for function, files in dicts.items(): # function eg: "get_include("; files eg: ["/media/haoteng/python/Theano--Theano/theano/gpuarray/linalg.py", etc ...]
