@@ -2,203 +2,194 @@ import os
 import utils
 import sys
 from datetime import datetime
-from multiprocessing.dummy import Pool as DummyPool
 import queue
 from api_formatter import *
+import pandas as pd
+from pathlib import Path
+from shutil import copy2 
+import json
 
+#from git import Repo
 
 # File wide constant
-MINIMUM_STAR = 20
-SEARCHED_REPO = {}
-DOWNLOAD_LIST = queue.Queue()
 WRITE_QUEUE = queue.Queue()
 CODE_QUEUE = queue.Queue()
 FORMATTED_QUERY_NAME = ""
 FORMATTED_QUERY_KEYS = []
+# APIS = process_list_of_libraries("data/py_libraries_processed.txt")
+# with open("data/new_python_files.txt") as datafile:
+#     PYTHON_FILEPATHS = datafile.read().split("\n")
+
+def build_index(): #should be depracated in favour of using aho-corasick algo search
+    index = {a:[] for a in APIS}
+    #* temp_api = [i[0] + "." + i[1] for i in APIS] <- use this for when function level search through APIS
+    for pyfile in PYTHON_FILEPATHS:
+        with open(pyfile, "r") as pf:
+            code = pf.read()
+            for api in APIS:
+                if code.find(api) != -1:
+                    index[api].append(pyfile)
+                    print(f"{api} found in {pyfile}")
+    return index
 
 def processFunction(result):
+    file_count, api_instance_count = 0, 0
     try:
-        global total_api_instance_count
-        global total_file_count
-        global SEARCHED_REPO
-        global DOWNLOAD_LIST
         global WRITE_QUEUE
         global CODE_QUEUE
 
-        current_file = result
-        current_repo = result.repository
-        repository_name = current_repo.full_name
-        file_type = utils.get_file_type(current_file.name)
-        print("Searching for API usage in: ")
-        print("    Repository name: " + repository_name)
-        print("        File path: " + current_file.path)
-
-
-        # Check if current file is contained within site-packages or venv
-        list_not_processed = [".git", "venv", "site-packages", "sklearn"]
-        contain_not_processed = False
-        for term in list_not_processed:
-            if term in current_file.path:
-                contain_not_processed = True
-                break
-        if contain_not_processed:
+        try:
+            decoded_file_content = get_file_contents(result) #opens and reads .py file coming in
+        except:
             return None
+        try:
+            tree = ast.parse(decoded_file_content)
+        except:
+            return
 
-        # Check if the repo is already looked into before
-        # And check the minimum number of star on the repo
-        # Consider deactivating the functionality for ipynb / jupyter notebook first because of their different
-        # type of file (not a simple plain text)
+        api_name = FORMATTED_QUERY_NAME.split(".")[-1] #takes the method name in the api call, eg "relu" from "tf.nn.relu"
+        list_processed_api = process_api_format(tree, api_name) #returns list of dict objects
+        is_api_found = False
+        list_api_location = []
+        for entry in list_processed_api:
+            current_name = entry["name"]
+            current_keys = entry["key"]
+            current_line = entry["line_no"]
+            current_keys.append('')
 
-        # Also consider a less rigid approach in which a repo does not need to have a requirements.txt but instead have
-        # a mention of sklearn in the readme as there are some people who list their requirements in the readme
+            if FORMATTED_QUERY_NAME in current_name:
+                # Then check the keys
+                key_is_correct = True
+                isNone = False
+                for key in FORMATTED_QUERY_KEYS:
+                    if key == "None":
+                        isNone = True
+                    if key not in current_keys:
+                        key_is_correct = False
+                # Special processing if query key is None
+                if isNone:
+                    # len is supposed to be 1 if no keyword is declared (e.g. only have '' as keyword param)
+                    if len(current_keys) > 1:
+                        key_is_correct = False
+                    else:
+                        key_is_correct = True
+                if key_is_correct:
+                    temp_string = "API Invocation in line: " + current_line.__str__() + "\n"
+                    temp_string += entry["code"]
+                    CODE_QUEUE.put(entry["code"])
+                    list_api_location.append(temp_string)
+                    is_api_found = True
 
-        already_exist = False
-        # check if repository is checked before
-        if repository_name in SEARCHED_REPO:
-            REPO_PATH = SEARCHED_REPO[repository_name]
-            # check if the same path is already checked
-            # if not, add to the list of checked path
-            if current_file.path in REPO_PATH:
-                already_exist = True
-            else:
-                REPO_PATH.append(current_file.path)
-        else:
-            # Repository is not checked yet, add them into the dictionary
-            SEARCHED_REPO[repository_name] = [current_file.path]
+        if is_api_found:
+            # previously, if a 
+            # temp = result.split(os.sep)
+            # temp = temp[temp.index("engineered") + 1]
+            # p = str(Path.cwd()) + "/result_snippets/" + FORMATTED_QUERY_NAME + "/" + temp
+            # Path(p).mkdir(parents = True, exist_ok = True)
+            # copy2(result, p)
 
-        if not already_exist and current_repo.stargazers_count >= MINIMUM_STAR:
-            # Process the file content
-            try:
-                decoded_file_content = current_file.decoded_content.decode("utf-8")
-            except:
-                return None
-            try:
-                tree = ast.parse(decoded_file_content)
-            except:
-                return
+            file_count += 1
+            listWrite = []
+            listWrite.append("----------------\n")
+            listWrite.append("File path: " + result + "\n")
+            for text in list_api_location:
+                api_instance_count += 1
+                listWrite.append(text + "\n")
 
-            # SAVE THE FILE TO COUNT THE RECALL LATER:
-
-
-            api_name = FORMATTED_QUERY_NAME.split(".")[-1]
-            list_processed_api = process_api_format(tree, api_name)
-            is_api_found = False
-            list_api_location = []
-            for entry in list_processed_api:
-                current_name = entry["name"]
-                current_keys = entry["key"]
-                current_line = entry["line_no"]
-                current_keys.append('')
-
-                if FORMATTED_QUERY_NAME in current_name:
-                    # Then check the keys
-                    key_is_correct = True
-                    isNone = False
-                    for key in FORMATTED_QUERY_KEYS:
-                        if key == "None":
-                            isNone = True
-                        if key not in current_keys:
-                            key_is_correct = False
-                    # Special processing if query key is None
-                    if isNone:
-                        # len is supposed to be 1 if no keyword is declared (e.g. only have '' as keyword param)
-                        if len(current_keys) > 1:
-                            key_is_correct = False
-                        else:
-                            key_is_correct = True
-                    if key_is_correct:
-                        temp_string = "API Invocation in line: " + current_line.__str__() + "\n"
-                        temp_string += entry["code"]
-                        CODE_QUEUE.put(entry["code"])
-                        list_api_location.append(temp_string)
-                        is_api_found = True
-
-            if is_api_found:
-                git_url = current_file.repository.git_url
-                if git_url not in DOWNLOAD_LIST.queue:
-                    DOWNLOAD_LIST.put("git clone " + git_url + "\n")
-                total_file_count += 1
-                listWrite = []
-                listWrite.append("----------------\n")
-                listWrite.append("Github Link: " + git_url.__str__() + "\n")
-                listWrite.append("Repository: " + repository_name + "\n")
-                listWrite.append("File path: " + current_file.path + "\n")
-                for text in list_api_location:
-                    total_api_instance_count += 1
-                    listWrite.append(text + "\n")
-
-                listWrite.append("\n")
-                WRITE_QUEUE.put(listWrite)
+            listWrite.append("\n")
+            WRITE_QUEUE.put(listWrite)
     except Exception as e:
         print(e.__str__())
+    
+    return (file_count, api_instance_count)
 
-
-if __name__ == "__main__":
-
-    if len(sys.argv) < 3:
-        print("USAGE: ")
-        print('python search.py "LIBRARY_NAME" "FUNCTION_NAME"')
-        print('e.g. : python search.py "scikit-learn" "sklearn.cluster.KMeans"')
-        exit()
-
-    # Github API search provide up to 1000 results for each search
-    PYTHON_LANGUAGE_QUERY = "language:python"
-    API_QUERY = sys.argv[2]
-    LIBRARY = sys.argv[1]
-    SEARCH_QUERY = f"q={API_QUERY}+extension:py"
-
-    # Changed into () from #
-    temp = API_QUERY.split("(")
-    # if len > 1, there are keyword query
-    if len(temp) > 1:
-        key_string = temp[1][:-1]
+def main(query, filepaths):
+    tfc, tapic = 0, 0
+    try:
+        global FORMATTED_QUERY_KEYS
+        global FORMATTED_QUERY_NAME
+    except:
+        pass
+    temp = query.split("(")
+    # if len > 1, there are keyword queries
+    if len(temp) > 1: 
+        key_string = temp[1][:-1] #"n = 4"
         FORMATTED_QUERY_KEYS = key_string.split(",")
-    FORMATTED_QUERY_NAME = temp[0]
-
-    # Create and test connection
-    g = utils.open_github_connection()
-
-    conn = utils.test_github_connection()
-    functionName = API_QUERY.__str__().split(".")[-1]
-    if conn != 1:
-        exit()
-
-    search_result = g.search_code(SEARCH_QUERY)
-    total_count = search_result.totalCount
-    # You can modify the amount of searched repo using python array slicing here
-    # search_result = search_result[0:100]
-
-    print("Query: " + SEARCH_QUERY)
+    FORMATTED_QUERY_NAME = temp[0] #"sklearn.cluster.KMeans"
 
     # Open the output file too
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
-    output_function = API_QUERY.replace(".", "-")
-    output_file_name = output_function + "_" + current_time + ".txt"
-    print("Output file: " + output_file_name)
+    output_function = query.replace(".", "-")
+    output_file_name = str(Path.cwd()/"result_summaries") + os.sep + output_function + "_" + current_time + ".txt"
+    output_err_name = str(Path.cwd()/"result_errors") + os.sep + output_function + "_" + current_time + "_errors.txt"
+    print(f"...Output file: {output_file_name}")
     outfile = open(output_file_name, 'w', encoding="utf-8")
-    outfile.write("Total amount of searched repo: " + total_count.__str__() + "\n")
-
-    total_file_count = 0
-    total_api_instance_count = 0
+    errorfile = open(output_err_name, "w", encoding="utf-8")
 
     start_time = time()
 
-    print(search_result)
+    # if an api mention is detected in file f, a copy of f will be saved in ../result_snippets/<api query>/<owner--project>/
+    for f in filepaths:
+        try:
+            total_file_count, total_api_instance_count = processFunction(f)
+            tfc += total_file_count
+            tapic += total_api_instance_count
+        except:
+            errorfile.write(f + "\n")
 
-    with DummyPool(32) as p:
-        p.map(processFunction, search_result)
-
+    #with DummyPool(32) as p:
+    #    p.map(processFunction, search_result)
     for listQ in WRITE_QUEUE.queue:
         for line in listQ:
-            print(line)
             outfile.write(line)
 
-    outfile.write("Total file containing the API: " + total_file_count.__str__() + "\n")
-    outfile.write("Total API usage count: " + total_api_instance_count.__str__() + "\n\n")
-    outfile.write("Download link and script below: \n")
-    outfile.write("Time taken: " + (time() - start_time).__str__() + "\n\n")
-    for line in DOWNLOAD_LIST.queue:
-        outfile.write(line)
+    outfile.write("***Python files evaluated in total: " + str(len(filepaths)) + "\n")
+    outfile.write("***Total files containing the API: " + tfc.__str__() + "\n")
+    outfile.write("***Total API usage count: " + tapic.__str__() + "\n\n")
+    outfile.write("***Time taken: " + (time() - start_time).__str__() + "\n\n")
     outfile.close()
+    errorfile.close()
 
-    print("Time taken: " + (time() - start_time).__str__())
+if __name__ == "__main__":
+    """
+    Usage of script:
+    input: list of apis to search for
+           directory of projects to search through
+    output: text files summarising results put in "results_summaries" folder
+    """
+    (Path.cwd()/"result_summaries").mkdir(exist_ok = True)
+    (Path.cwd()/"result_errors").mkdir(exist_ok = True)
+
+    # # index = build_index()
+    # # print("Indexing Complete!")
+
+    # # with open('index.json', 'w') as indexfile:
+    # #     json.dump(index, indexfile, indent = 4)
+
+
+    # # torch_apis = process_list_of_torch_apis("torch_apis.txt")
+    # # torch_apis = [("PyTorch", "is_tensor")]
+
+    # with open("data/final_search_v4.json") as f:
+    #     data = json.load(f)
+    
+    # for dicts in data.values():
+    #     for function, files in dicts.items():
+    #         print(f"Querying for {function}...")
+    #         main(function, files)
+    #         with WRITE_QUEUE.mutex:
+    #             WRITE_QUEUE.queue.clear()
+    #         with CODE_QUEUE.mutex:
+    #             CODE_QUEUE.queue.clear()
+    
+    # # main("numpy.zeros_like()", ["/media/haoteng/python/gem--oq-engine/openquake/hazardlib/gsim/bindi_2014.py"])
+    # # with WRITE_QUEUE.mutex:
+    # #     WRITE_QUEUE.queue.clear()
+    # # with CODE_QUEUE.mutex:
+    # #     CODE_QUEUE.queue.clear()
+
+    main("simplejson.simplejson.dumps", ["hue--test_iterable.py"])
+    with WRITE_QUEUE.mutex:
+        WRITE_QUEUE.queue.clear()
+    with CODE_QUEUE.mutex:
+        CODE_QUEUE.queue.clear()
