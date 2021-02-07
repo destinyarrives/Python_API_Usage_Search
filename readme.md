@@ -26,12 +26,17 @@ Script takes as input the csv from (A) and clones them into the folder which you
 Some useful functions for processing the json file provided by Divya. It also contains functions for the indexing step. 
 
 #### D. Search Indexing
+./build_index.py
+
 
 
 #### E. Main Search Function
 ./main.py
 
 Main search function built on top of Stefanus' work. It uses the index from step (D) to perform the type-matched search. The FQN of the api is first recovered from the input dictionary, and script searches for it in the list of files retrieved as the value from the input dictionary using the FQN as key. The final output for each FQN is written into a textfile at "./results_summaries/<FQN><current time>.txt". Each ouput text contains the file name that was found to contain the API as well as the lines where it was found.  
+```
+NOTE: this is basically the only component in the pipeline that needs to be changed out to treat other projects of other languages. 
+```
 
 #### F. Evaluation
 ./card_sort.py
