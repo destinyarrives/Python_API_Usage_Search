@@ -74,7 +74,7 @@ def clean_final_json(): # this function is such a dirty fix but it'll have to do
     
     return output
 
-    #! previous erroneous version that 
+    #! previous erroneous version that only assigns the list to the first instance of an api name; thus missing out on a lot of possible matches
     # for library, dicts in data.items(): # dicts = {truncated function:[file names]}
     #     output[library] = {} 
     #     for function, files in dicts.items(): # function eg: "get_include("; files eg: ["/media/haoteng/python/Theano--Theano/theano/gpuarray/linalg.py", etc ...]
@@ -106,6 +106,7 @@ def match_fqn(fdict, lib, fun):
             else:
                 return item[0] + "." + item[2]
 
+#TODO up to you to activate which part of the functions
 if __name__ == '__main__':
     with open("../final_search_v4.json", "w") as outfile:
         output = clean_final_json()
