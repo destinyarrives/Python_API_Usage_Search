@@ -81,13 +81,6 @@ def processFunction(result):
                     is_api_found = True
 
         if is_api_found:
-            # previously, if a 
-            # temp = result.split(os.sep)
-            # temp = temp[temp.index("engineered") + 1]
-            # p = str(Path.cwd()) + "/result_snippets/" + FORMATTED_QUERY_NAME + "/" + temp
-            # Path(p).mkdir(parents = True, exist_ok = True)
-            # copy2(result, p)
-
             file_count += 1
             listWrite = []
             listWrite.append("----------------\n")
@@ -95,7 +88,6 @@ def processFunction(result):
             for text in list_api_location:
                 api_instance_count += 1
                 listWrite.append(text + "\n")
-
             listWrite.append("\n")
             WRITE_QUEUE.put(listWrite)
     except Exception as e:
@@ -120,12 +112,12 @@ def main(query, filepaths):
     # Open the output file too
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
     output_function = query.replace(".", "-")
-    output_file_name = str(Path.cwd()/"result_summaries") + os.sep + output_function + "_" + current_time + ".txt"
+    #* you could choose to change the file naming scheme
+    output_file_name = str(Path.cwd()/"result_summaries") + os.sep + output_function + "_" + current_time + ".txt" 
     output_err_name = str(Path.cwd()/"result_errors") + os.sep + output_function + "_" + current_time + "_errors.txt"
     print(f"...Output file: {output_file_name}")
     outfile = open(output_file_name, 'w', encoding="utf-8")
     errorfile = open(output_err_name, "w", encoding="utf-8")
-
     start_time = time()
 
     # if an api mention is detected in file f, a copy of f will be saved in ../result_snippets/<api query>/<owner--project>/
@@ -159,37 +151,18 @@ if __name__ == "__main__":
     """
     (Path.cwd()/"result_summaries").mkdir(exist_ok = True)
     (Path.cwd()/"result_errors").mkdir(exist_ok = True)
+    # torch_apis = process_list_of_torch_apis("torch_apis.txt")
+    # torch_apis = [("PyTorch", "is_tensor")]
 
-    # # index = build_index()
-    # # print("Indexing Complete!")
-
-    # # with open('index.json', 'w') as indexfile:
-    # #     json.dump(index, indexfile, indent = 4)
-
-
-    # # torch_apis = process_list_of_torch_apis("torch_apis.txt")
-    # # torch_apis = [("PyTorch", "is_tensor")]
-
-    # with open("data/final_search_v4.json") as f:
-    #     data = json.load(f)
+    # the input json file will generally be formatted as {libraryName:{apiName:[filepaths]}}
+    with open("data/final_search_v4.json") as f:
+        data = json.load(f)
     
-    # for dicts in data.values():
-    #     for function, files in dicts.items():
-    #         print(f"Querying for {function}...")
-    #         main(function, files)
-    #         with WRITE_QUEUE.mutex:
-    #             WRITE_QUEUE.queue.clear()
-    #         with CODE_QUEUE.mutex:
-    #             CODE_QUEUE.queue.clear()
-    
-    # # main("numpy.zeros_like()", ["/media/haoteng/python/gem--oq-engine/openquake/hazardlib/gsim/bindi_2014.py"])
-    # # with WRITE_QUEUE.mutex:
-    # #     WRITE_QUEUE.queue.clear()
-    # # with CODE_QUEUE.mutex:
-    # #     CODE_QUEUE.queue.clear()
-
-    main("simplejson.simplejson.dumps", ["hue--test_iterable.py"])
-    with WRITE_QUEUE.mutex:
-        WRITE_QUEUE.queue.clear()
-    with CODE_QUEUE.mutex:
-        CODE_QUEUE.queue.clear()
+    for dicts in data.values():
+        for function, files in dicts.items():
+            print(f"Querying for {function}...")
+            main(function, files)
+            with WRITE_QUEUE.mutex:
+                WRITE_QUEUE.queue.clear()
+            with CODE_QUEUE.mutex:
+                CODE_QUEUE.queue.clear()

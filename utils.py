@@ -11,11 +11,6 @@ from pathlib import Path
 # # my github api key will be stored in an untracked token.txt file
 # token_file = os.path.join(os.getcwd(), "token.txt")
 
-# with open(token_file, 'rt') as f:
-#     GITHUB_TOKEN = f.read().replace('\n', '')
-# #GITHUB_TOKEN = "aa829f9756cfd2ff68d08cb11fd91722b4cf1957"
-
-
 def open_github_connection():
     if not GITHUB_TOKEN:
         sys.exit("Error: Github token is not set or incorrect.\nPlease set your Github token in utils.py file")
@@ -185,7 +180,4 @@ def process_list_of_libraries(list_of_apis_file):
                     entered.append(line)
                     result.append(line)
     return result
-
-def process_list_of_apis_from_libraries():
-    library2file = open()
     
