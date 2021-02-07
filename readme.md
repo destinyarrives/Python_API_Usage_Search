@@ -28,14 +28,14 @@ Some useful functions for processing the json file provided by Divya. It also co
 #### D. Search Indexing
 ./build_index.py
 
-
+Does simple string matching to find apis that contain mentions of the top level library name, and the final method/function name (Eg: "tensorflow" and "Conv2d("). Depending on your needs, it is possible to run on just the library level or just the function level, this would incur different costs because the more indexing you do the less time you'd have to spend on step E. 
 
 #### E. Main Search Function
 ./main.py
 
 Main search function built on top of Stefanus' work. It uses the index from step (D) to perform the type-matched search. The FQN of the api is first recovered from the input dictionary, and script searches for it in the list of files retrieved as the value from the input dictionary using the FQN as key. The final output for each FQN is written into a textfile at "./results_summaries/<FQN><current time>.txt". Each ouput text contains the file name that was found to contain the API as well as the lines where it was found.  
 ```
-NOTE: this is basically the only component in the pipeline that needs to be changed out to treat other projects of other languages. 
+NOTE: this is basically the only component in the pipeline that needs to be changed out to treat projects of other languages. 
 ```
 
 #### F. Evaluation
