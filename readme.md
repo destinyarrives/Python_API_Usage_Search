@@ -13,16 +13,16 @@ The general workflow for the project is as follows: (A) find engineered python p
 #### A. Finding Engineered Projects
 ./scraping/gh_scaper.py
 
-
+Script outputs a csv file that will be populated with all the data from the RepoReapers page (https://reporeapers.github.io/results/1.html). Columns consist of ["Repo", "Web", "Language", "Architecture", "Community", "CL", "Documentation", "History", "Issues", "License", "Size", "Unit Test", "State", "Stars", "Org Score Based", "Org Random Forest", "Util Score Based", "Util Random Forest", "Timestamp"]... The csv will also be filtered based on programming language and predicted score assigned by the 4 different classifiers of the RepoRepears project. For our purposes we will only use those that have a combined score of 4/4 (meaning each of the 4 classifiers predicted the project is engineered). 
 
 #### B. Cloning Projects
-```
-android.app.Notification.Builder#addAction(android.app.Notification.Action)
-```
+./git_clone.py
+
+Script takes as input the csv from (A) and clones them into the folder which you can name. The folders containing each project will be named "./<project owner name>--<project name>/"
+
 #### C. API Json Processing
-```
-android.app.Notification.Builder#addAction(int, java.lang.CharSequence, android.app.PendingIntent)
-```
+./data/scripts/py_functions_processing.py
+
 #### D. Search Indexing
 ```
 android.os.Vibrator#vibrate(long)&android.location.LocationManager#removeGpsStatusListener(android.location.GpsStatus.Listener)

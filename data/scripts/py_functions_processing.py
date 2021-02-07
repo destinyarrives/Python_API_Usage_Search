@@ -57,10 +57,6 @@ def lib2func_dict(datadict):
     return output 
 
 if __name__ == '__main__':
-    #! not needed
-    # if len(sys.argv) == 1:
-    #     sys.exit("If extraction should be done on library level, please call script with argv[1] == 'l'; for function level use 'f'. ")
-    
     JSON_FILE_LOCATION = "../py_functions.json"
     OUTPUT_FILE_LOCATION = "../py_libraries2functions.txt"
 
@@ -77,11 +73,6 @@ if __name__ == '__main__':
     else:
     # writes list of methods to search for in a textfile
         with open(OUTPUT_FILE_LOCATION, "w") as outfile:
-            #! not needed
-            # if sys.argv[1] == "l":
-            #     data = process_libraries(data)
-            # else:
-            #     data = process_functions(data)
             for item in data:
                 outfile.write(item + "\n")
 

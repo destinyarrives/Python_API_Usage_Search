@@ -8,6 +8,7 @@ from time import sleep
 
 
 def analyse_scraped_csv(csv_file, lang, stars):
+    # important helper function to filter the population csv for language (Python/Java) and classifier score
     df = pd.read_csv(csv_file)
     df["cscore"] = df["Org Score Based"] + df["Org Random Forest"] + df["Util Score Based"] + df["Util Random Forest"]
     df = df[(df["cscore"] >= stars) & (df["Language"] == lang)]
