@@ -23,14 +23,17 @@ Script takes as input the csv from (A) and clones them into the folder which you
 #### C. API Json Processing
 ./data/scripts/py_functions_processing.py
 
+Some useful functions for processing the json file provided by Divya. It also contains functions for the indexing step. 
+
 #### D. Search Indexing
-```
-android.os.Vibrator#vibrate(long)&android.location.LocationManager#removeGpsStatusListener(android.location.GpsStatus.Listener)
-```
+
+
 #### E. Main Search Function
+./main.py
+
+Main search function built on top of Stefanus' work. It uses the index from step (D) to perform the type-matched search. The FQN of the api is first recovered from the input dictionary, and script searches for it in the list of files retrieved as the value from the input dictionary using the FQN as key. The final output for each FQN is written into a textfile at "./results_summaries/<FQN><current time>.txt". Each ouput text contains the file name that was found to contain the API as well as the lines where it was found.  
+
 #### F. Evaluation
+./card_sort.py
 
-
-
-## Developer Mark 
-**Note** that this apps is already tested on Ubuntu and Mac OS. Unfortunately, this doesn't work well on Microsoft shell because of the multi-threading part. Don't worry, we still find the solution for this. If you find a problem while using this apps, please notify me via [this](mhilmia@smu.edu.sg) email. I will help you soon to ensure that you can try this amazing apps immediately :). 
+Script helps with evaluation by randomly choosing 50 apis, processing the corresponding search output from step (E), randomly choosing 10 samples and copying the relevant sample files to a different folder (so you don't have to go searching for them yourself). 
