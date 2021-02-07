@@ -4,6 +4,9 @@ import pandas as pd
 from numpy import random
 from time import sleep
 
+# simple script to script results from RepoReapers project: https://reporeapers.github.io/results/1.html
+
+
 def analyse_scraped_csv(csv_file, lang, stars):
     df = pd.read_csv(csv_file)
     df["cscore"] = df["Org Score Based"] + df["Org Random Forest"] + df["Util Score Based"] + df["Util Random Forest"]

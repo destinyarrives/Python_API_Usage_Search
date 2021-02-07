@@ -3,6 +3,11 @@ from pathlib import Path
 from datetime import datetime
 import pandas as pd
 
+"""
+Simple script to help you clone a list of repos- for our purposes this would generally be the output from the RepoReapers project, or projects that
+have been "engineered". It'll also save the current commit hash to recover a snapshot of the project status later on.
+"""
+
 def generate_list_of_urls_from_csv(csv_file, mode = 2):
     """
     input: output file from main.py
@@ -20,14 +25,6 @@ def generate_list_of_urls_from_csv(csv_file, mode = 2):
         df.dropna(how="all", inplace=True) 
         dict_of_urls = dict(zip(df["Repo"], df["Web"]))
     return dict_of_urls
-
-# def do_git_clone(dict_of_urls):
-#     """
-#     uses list of github urls and clones them into a folder- the naming structure will be ../engineered/<project name>/
-
-#     input: output from generate_list_of_urls_from_csv function 
-#     output: 
-#     """
     
 if __name__ == "__main__":
     if len(sys.argv) < 3:
@@ -40,8 +37,8 @@ if __name__ == "__main__":
 
     # opens file to record repos that encountered errors
     current_time = datetime.now().strftime("%B-%d-%Y_%H%M%p")
-    output_file_name =  "errorCloning_" + current_time + ".txt"
-    outfile = open(output_file_name, 'w', encoding="utf-8")
+    errors_file_name =  "errorCloning_" + current_time + ".txt"
+    errors_file = open(errors_file_name, 'w', encoding="utf-8")
 
     successes, failures = 0, 0
     commit_hashes = {}
@@ -58,13 +55,12 @@ if __name__ == "__main__":
             commit_hashes[url] = short_sha
 
             successes += 1
-
         except:
-            outfile.write(url + "\n")
+            errors_file.write(url + "\n")
             failures += 1
 
     d = pd.DataFrame.from_dict(commit_hashes, orient = "index", columns = ["Hash"])
     d.to_csv("java_commit_hashes.csv")
 
-    outfile.close()
+    errors_file.close()
     print(f"Repositories were cloned from Github! Success: {successes} Fail: {failures}")

@@ -15,22 +15,6 @@ def acsearch(haystacks, needles):
                     if haystack not in output[k][original_value]:
                         output[k][original_value].append(haystack)
 
-# with open("data/py_libraries_processed.txt") as lf:
-#     libraries = lf.read().split("\n")[:-1]
-# with open("data/view.json") as jsonfile:
-#     haystacks = json.load(jsonfile)
-# with open("data/lib2func.json") as jsonfile:
-#     needles = json.load(jsonfile)
-
-# output = {}
-# for lib, funcs in needles.items():
-#     output[lib] = {}
-#     for fun in funcs:
-#         output[lib][fun] = []
-
-# with open('final_search.json', 'w') as indexfile:
-#     json.dump(output, indexfile, indent = 4) 
-
 def clean_final_json():
     # this function is such a dirty fix but it'll have to do for now... :')
     with open("../final_search.json") as jfile:

@@ -23,7 +23,7 @@ def find_files_from_result(c):
     return result
 
 if __name__ == '__main__':
-    #* change this to where the results snippets from main.py are stored in
+    #TODO change this to where the results snippets from main.py are stored in
     DIRECTORY = Path.cwd()/"1_260121"
 
     new_location = Path.cwd()/"manual_analysis" # path for putting results into
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     # sampling strategy: pick 50 random apis, for each api choose 10 mentions and manually evaluate
     for api in sample(all_apis, 50):
         print(f"choosing {api}")
-        ct = 0 #TODO possibly automate this for average accuracy computation using pandas?
+        ct = 0 
 
         folder = api.split("/")[5].split(".")[0]
         with open(api, "r") as f:

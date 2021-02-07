@@ -2,6 +2,9 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
+# simple script to script results from PyTorch API Documentation page
+
+
 pages = ["https://pytorch.org/docs/stable/torch.html",
          "https://pytorch.org/docs/stable/nn.html",
          "https://pytorch.org/docs/stable/nn.functional.html",
